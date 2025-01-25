@@ -10,7 +10,10 @@ import SnapKit
 
 final class ProfileSettingView: BaseView {
     
-    let profileImageView = UIImageView()
+    let profileImageView = ProfileImageView(
+        imageNumber: Int.random(in: 0...11),
+        isSelected: true
+    )
     let cameraView = UIView()
     let cameraImageView = UIImageView()
     
@@ -23,8 +26,6 @@ final class ProfileSettingView: BaseView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        profileImageView.layer.cornerRadius = profileImageView.frame.width / 2
-        
         cameraView.layer.cornerRadius = cameraView.frame.width / 2
     }
 
@@ -86,13 +87,6 @@ final class ProfileSettingView: BaseView {
     }
     
     override func configureView() {
-        profileImageView.isUserInteractionEnabled = true
-        profileImageView.contentMode = .scaleAspectFill
-        profileImageView.image = UIImage(named: "profile_\(Int.random(in: 0...11))")
-        profileImageView.clipsToBounds = true
-        profileImageView.layer.borderColor = UIColor.point.cgColor
-        profileImageView.layer.borderWidth = 3
-        
         cameraView.backgroundColor = .point
         cameraView.isUserInteractionEnabled = true
         
