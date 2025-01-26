@@ -1,5 +1,5 @@
 //
-//  ProfileImageView.swift
+//  ProfileImageCustomView.swift
 //  Moviegram
 //
 //  Created by 이빈 on 1/25/25.
@@ -9,17 +9,24 @@ import UIKit
 import SnapKit
 
 // 프로필 이미지 커스텀 뷰
-class ProfileImageView: BaseView {
+class ProfileImageCustomView: BaseView {
     
     let profileImageView = UIImageView()
-    var imageNumber: Int = 0
-    var isSelected: Bool = false
+    var imageNumber: Int = 0 {
+        didSet {
+            self.configureView()
+        }
+    }
+    var isSelected: Bool = false {
+        didSet {
+            self.configureView()
+        }
+    }
     
     convenience init(imageNumber: Int, isSelected: Bool) {
         self.init()
         self.imageNumber = imageNumber
         self.isSelected = isSelected
-        configureView() // 부모 클래스로 인해, 자식이 생성되기 전에 먼저 실행돼버리는 이슈로 재호출.
     }
     
     override func layoutSubviews() {
