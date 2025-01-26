@@ -10,10 +10,8 @@ import SnapKit
 
 final class ProfileSettingView: BaseView {
     
-    let profileImageView = ProfileImageView(
-        imageNumber: Int.random(in: 0...11),
-        isSelected: true
-    )
+    let profileImageView = ProfileImageCustomView()
+    
     let cameraView = UIView()
     let cameraImageView = UIImageView()
     
@@ -87,6 +85,8 @@ final class ProfileSettingView: BaseView {
     }
     
     override func configureView() {
+        profileImageView.isSelected = true
+        
         cameraView.backgroundColor = .point
         cameraView.isUserInteractionEnabled = true
         

@@ -29,6 +29,7 @@ enum ConditionStatus {
 
 final class ProfileSettingViewController: BaseViewController<ProfileSettingView> {
     
+    let randomImageNumber = Int.random(in: 0...11)
     let forbiddenStrings: [Character] = ["@", "#", "$", "%"]
     
     override func viewDidLoad() {
@@ -39,6 +40,9 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     }
     
     override func configureView() {
+        
+        mainView.profileImageView.imageNumber = randomImageNumber
+        
         mainView.nicknameTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         
         mainView.completionButton.addTarget(self, action: #selector(completionButtonTapped), for: .touchUpInside)
@@ -51,7 +55,8 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     @objc func profileImageTapped() {
         print(#function)
         // 프로필 이미지 설정 화면으로 전환
-        let vc = ProfileImageSettingViewViewController()
+        let vc = ProfileImageSettingViewController()
+        vc.selectedImageNumber = randomImageNumber
         navigationController?.pushViewController(vc, animated: true)
     }
     
