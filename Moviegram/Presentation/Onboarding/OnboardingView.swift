@@ -26,7 +26,7 @@ final class OnboardingView: BaseView {
     
     override func configureLayout() {
         mainImageView.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(30)
+            make.top.equalTo(safeAreaLayoutGuide)
             make.horizontalEdges.equalToSuperview()
             make.height.equalTo(500)
         }
@@ -54,12 +54,12 @@ final class OnboardingView: BaseView {
         
         mainLabel.text = "Onboarding"
         mainLabel.textColor = .white
-        mainLabel.font = .Font.large.of(weight: .heavy)
+        mainLabel.font = .italicSystemFont(ofSize: 30)
         mainLabel.textAlignment = .center
         
         subLabel.text = "당신만의 영화 세상,\nMoviegram을 시작해 보세요."
         subLabel.textColor = .white
-        subLabel.font = .Font.medium.of(weight: .medium)
+        subLabel.font = .Font.large.of(weight: .medium)
         subLabel.textAlignment = .center
         subLabel.numberOfLines = 0
         
