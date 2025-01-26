@@ -34,8 +34,6 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .black
-        navigationController?.navigationBar.topItem?.backButtonTitle = ""
         title = "프로필 설정"
     }
     

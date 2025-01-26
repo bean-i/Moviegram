@@ -25,14 +25,17 @@ class BaseViewController<T: UIView>: UIViewController {
         configureDelegate()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        view.backgroundColor = .black
+        navigationController?.navigationBar.topItem?.backButtonTitle = ""
+    }
+    
     func configureHierarchy() { }
     
     func configureLayout() { }
     
-    func configureView() {
-        // 모든 뷰컨트롤러에서 백버튼 타이틀 없애기
-        navigationController?.navigationBar.topItem?.backButtonTitle = ""
-    }
+    func configureView() { }
     
     func configureDelegate() { }
     

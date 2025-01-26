@@ -13,7 +13,6 @@ final class AppAppearance {
         
         // MARK: - 네비게이션바
         UINavigationBar.appearance().tintColor = .point
-        UINavigationBar.appearance().topItem?.backButtonTitle = ""
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         
     }

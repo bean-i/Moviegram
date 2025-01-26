@@ -12,8 +12,6 @@ final class ProfileImageSettingViewController: BaseViewController<ProfileImageSe
     var selectedImageNumber: Int = 0
     
     override func configureView() {
-        view.backgroundColor = .black
-        navigationController?.navigationBar.topItem?.backButtonTitle = ""
         title = "프로필 이미지 설정"
         
         mainView.profileImageView.imageNumber = selectedImageNumber
