@@ -10,6 +10,12 @@ import UIKit
 final class ProfileImageSettingViewController: BaseViewController<ProfileImageSettingView> {
     
     var selectedImageNumber: Int = 0
+    var passSelectedImageNumber: ((Int) -> Void)?
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        passSelectedImageNumber?(self.selectedImageNumber)
+    }
     
     override func configureView() {
         title = "프로필 이미지 설정"
@@ -44,12 +50,8 @@ extension ProfileImageSettingViewController: UICollectionViewDelegate, UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let selectedCell = collectionView.cellForItem(at: indexPath) as? ProfileImageCollectionViewCell else {
-            print("셀 선택 오류")
-            return
-        }
-        
-        mainView.profileImageView.imageNumber = selectedCell.imageNumber
+        selectedImageNumber = indexPath.item
+        mainView.profileImageView.imageNumber = selectedImageNumber
     }
 
 }

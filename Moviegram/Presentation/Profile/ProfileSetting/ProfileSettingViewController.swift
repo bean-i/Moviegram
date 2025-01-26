@@ -29,7 +29,7 @@ enum ConditionStatus {
 
 final class ProfileSettingViewController: BaseViewController<ProfileSettingView> {
     
-    let randomImageNumber = Int.random(in: 0...11)
+    var randomImageNumber = Int.random(in: 0...11)
     let forbiddenStrings: [Character] = ["@", "#", "$", "%"]
     
     override func viewDidLoad() {
@@ -55,6 +55,10 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
         // 프로필 이미지 설정 화면으로 전환
         let vc = ProfileImageSettingViewController()
         vc.selectedImageNumber = randomImageNumber
+        vc.passSelectedImageNumber = { value in
+            self.randomImageNumber = value
+            self.mainView.profileImageView.imageNumber = value
+        }
         navigationController?.pushViewController(vc, animated: true)
     }
     
