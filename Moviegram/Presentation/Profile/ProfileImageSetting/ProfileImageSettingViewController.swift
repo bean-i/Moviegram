@@ -18,7 +18,6 @@ final class ProfileImageSettingViewController: BaseViewController<ProfileImageSe
     }
     
     override func configureView() {
-        title = "프로필 이미지 설정"
         
         mainView.profileImageView.imageNumber = selectedImageNumber
         mainView.profileImageView.isSelected = true

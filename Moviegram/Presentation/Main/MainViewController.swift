@@ -7,14 +7,17 @@
 
 import UIKit
 
+protocol passUserInfoDelegate: AnyObject {
+    func passUserInfo()
+}
+
 final class MainViewController: BaseViewController<MainView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // 유저 데이터로 UI 업데이트
         mainView.configureData(data: UserInfo.shared)
-        
+    
         mainView.profileView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileViewTapped)))
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -38,6 +41,7 @@ final class MainViewController: BaseViewController<MainView> {
         
         let vc = ProfileSettingViewController()
         vc.isEditMode = true
+        vc.delegate = self
         let nav = UINavigationController(rootViewController: vc)
         
         nav.sheetPresentationController?.prefersGrabberVisible = true
@@ -45,4 +49,10 @@ final class MainViewController: BaseViewController<MainView> {
         present(nav, animated: true)
     }
 
+}
+
+extension MainViewController: passUserInfoDelegate {
+    func passUserInfo() {
+        mainView.configureData(data: UserInfo.shared)
+    }
 }

@@ -31,15 +31,52 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     
     var randomImageNumber = Int.random(in: 0...11)
     let forbiddenStrings: [Character] = ["@", "#", "$", "%"]
+    var isEditMode = false {
+        didSet {
+            if isEditMode {
+                editModeNavigationBar()
+            }
+        }
+    }
+    weak var delegate: passUserInfoDelegate?
+    
+    func editModeNavigationBar() {
+        title =  "프로필 편집"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "xmark"),
+            style: .plain,
+            target: self,
+            action: #selector(cancelButtonTapped)
+        )
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "저장",
+            style: .plain,
+            target: self,
+            action: #selector(completionButtonTapped)
+        )
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "프로필 설정"
+        title = isEditMode ? "프로필 편집" : "프로필 설정"
     }
     
     override func configureView() {
         
-        mainView.profileImageView.imageNumber = randomImageNumber
+        if isEditMode {
+            mainView.completionButton.isHidden = true
+            if let userImageNumber = UserInfo.shared.imageNumber,
+               let userNickname = UserInfo.shared.nickname {
+                randomImageNumber = userImageNumber
+                mainView.profileImageView.imageNumber = randomImageNumber
+                mainView.nicknameTextField.text = userNickname
+            }
+            
+        } else {
+            mainView.completionButton.isHidden = false
+            mainView.profileImageView.imageNumber = randomImageNumber
+        }
         
         mainView.nicknameTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         
@@ -54,6 +91,7 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
         print(#function)
         // 프로필 이미지 설정 화면으로 전환
         let vc = ProfileImageSettingViewController()
+        vc.title = isEditMode ? "프로필 이미지 편집" : "프로필 이미지 설정"
         vc.selectedImageNumber = randomImageNumber
         vc.passSelectedImageNumber = { value in
             self.randomImageNumber = value
@@ -103,14 +141,29 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     }
     
     @objc func completionButtonTapped() {
-        //WindowRootViewController 가 [메인 화면]으로 교체
-        // 여기서 유저 정보 저장해야될 듯?
-        print(#function)
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first else { return }
-        
-        window.rootViewController = UINavigationController(rootViewController: MainViewController())
-        window.makeKeyAndVisible()
+        print(#function, isEditMode)
+        // 유저 정보 저장
+        if isEditMode {
+            UserInfo.shared.imageNumber = randomImageNumber
+            UserInfo.shared.nickname = mainView.nicknameTextField.text
+            dismiss(animated: true)
+            delegate?.passUserInfo()
+            print("정보 저장 완료")
+            return
+        } else {
+            UserInfo.shared.imageNumber = randomImageNumber
+            UserInfo.shared.nickname = mainView.nicknameTextField.text
+            UserInfo.shared.joinDate = DateFormatter.stringFromDate(Date())
+            UserInfo.shared.storedMovies = []
+            
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let window = windowScene.windows.first else { return }
+            window.rootViewController = TabBarController()
+            window.makeKeyAndVisible()
+        }
     }
     
+    @objc func cancelButtonTapped() {
+        dismiss(animated: true)
+    }
 }
