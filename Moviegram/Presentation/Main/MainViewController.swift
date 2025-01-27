@@ -79,14 +79,32 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        print(#function)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayMovieCollectionViewCell.identifier, for: indexPath) as! TodayMovieCollectionViewCell
         
+        // 영화 데이터 표시
+        cell.delegate = self
+        cell.tag = todayMovies[indexPath.item].id // 영화 id를 tag로 설정
         cell.configureData(data: todayMovies[indexPath.item])
         
         return cell
-        
     }
     
+}
+
+extension MainViewController: LikeButtonDelegate {
+    
+    func likeButtonTapped(id: Int, isSelected: Bool) {
+        print(#function, id, isSelected)
+        if isSelected { // true이면 저장
+            UserInfo.shared.storedMovies = [id]
+        } else { // false이면 삭제
+            if let index = UserInfo.storedMovieList.firstIndex(of: id) {
+                UserInfo.storedMovieList.remove(at: index)
+                UserInfo.shared.storedMovies = Array(UserInfo.storedMovieList) // 새로운 집합으로 업데이트
+            }
+        }
+        // 버튼 업데이트 시, 프로필 뷰 업데이트!
+        mainView.configureData(data: UserInfo.shared)
+    }
     
 }
