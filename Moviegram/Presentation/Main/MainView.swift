@@ -23,7 +23,18 @@ final class MainView: BaseView {
     let noRecentSearchLabel = UILabel()
     
     let todayMovieLabel = UILabel()
+    let todayMovieCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
 
+    func todayMovieCollectionViewLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        let spacing: CGFloat = 10
+        layout.scrollDirection = .horizontal
+        layout.sectionInset = UIEdgeInsets(top: 0, left: spacing, bottom: 0, right: spacing)
+        layout.minimumInteritemSpacing = spacing
+        layout.itemSize = CGSize(width: 210, height: 380)
+        return layout
+    }
+    
     override func configureHierarchy() {
         profileView.addSubViews(
             profileImageView,
@@ -42,7 +53,8 @@ final class MainView: BaseView {
             recentSearchLabel,
             deleteAllSearchKeywordButton,
             recentSearchKeywordView,
-            todayMovieLabel
+            todayMovieLabel,
+            todayMovieCollectionView
         )
     }
 
@@ -106,6 +118,13 @@ final class MainView: BaseView {
             make.leading.equalToSuperview().inset(10)
         }
         
+        todayMovieCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(todayMovieLabel.snp.bottom).offset(10)
+            make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(380)
+            
+        }
+        
     }
     
     override func configureView() {
@@ -149,6 +168,9 @@ final class MainView: BaseView {
         todayMovieLabel.textColor = .white
         todayMovieLabel.font = .Font.large.of(weight: .heavy)
         
+        todayMovieCollectionView.collectionViewLayout = todayMovieCollectionViewLayout()
+        todayMovieCollectionView.showsHorizontalScrollIndicator = false
+        todayMovieCollectionView.backgroundColor = .black
     }
     
     func configureData(data: UserInfo) {
