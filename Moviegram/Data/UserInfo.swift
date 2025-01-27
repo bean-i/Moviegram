@@ -13,6 +13,9 @@ class UserInfo {
     
     private init() { }
     
+    // 좋아요 누른 영화 리스트 + UserDefaults에 저장할 배열
+    static var storedMovieList: Set<Int> = Set(UserInfo.shared.storedMovies ?? [])
+    
     let nicknameKey = "nickname"
     let imageNumberKey = "imageNumber"
     let joinDateKey = "joinDate"
@@ -45,12 +48,17 @@ class UserInfo {
         }
     }
     
-    var storedMovies: [String]? {
+    var storedMovies: [Int]? {
         get {
-            UserDefaults.standard.stringArray(forKey: storedMoviesKey)
+            UserDefaults.standard.object(forKey: storedMoviesKey) as? [Int]
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: storedMoviesKey)
+            if let addMovies = newValue {
+                for movie in addMovies {
+                    UserInfo.storedMovieList.insert(movie) // 집합에 넣어주기
+                }
+                UserDefaults.standard.set(Array(UserInfo.storedMovieList), forKey: storedMoviesKey)
+            }
         }
     }
     
