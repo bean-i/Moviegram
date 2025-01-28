@@ -78,7 +78,9 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
     }
     
     func configureData(data: Movie) {
-        if let url = URL(string: TMDBAPI.imageBaseURL + data.posterURL) {
+
+        if let posterURL = data.posterURL,
+           let url = URL(string: TMDBAPI.imageBaseURL + posterURL) {
             moviePosterImage.kf.setImage(with: url)
         } else {
             moviePosterImage.image = UIImage(systemName: "exclamationmark.triangle")

@@ -96,7 +96,8 @@ final class SearchTableViewCell: BaseTableViewCell {
     
     func configureData(data: Movie) {
         
-        if let url = URL(string: TMDBAPI.imageBaseURL + data.posterURL) {
+        if let posterURL = data.posterURL,
+           let url = URL(string: TMDBAPI.imageBaseURL + posterURL) {
             movieImageView.kf.setImage(with: url)
         } else {
             movieImageView.image = UIImage(systemName: "exclamationmark.triangle")
@@ -110,6 +111,7 @@ final class SearchTableViewCell: BaseTableViewCell {
             genreBox2.genreTitleId = data.genreID[1]
         } else if data.genreID.count == 1 {
             genreBox1.genreTitleId = data.genreID[0]
+            genreBox2.isHidden = true
         }
         
         
