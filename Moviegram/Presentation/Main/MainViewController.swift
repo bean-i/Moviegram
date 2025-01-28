@@ -20,6 +20,11 @@ final class MainViewController: BaseViewController<MainView> {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        mainView.configureData(data: UserInfo.shared)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
