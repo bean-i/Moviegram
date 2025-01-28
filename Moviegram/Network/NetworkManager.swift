@@ -14,8 +14,9 @@ final class NetworkManager {
     
     private init() { }
     
-    func getTodayMovies(api: Router,
-                        completionHandler: @escaping (TodayMovieData) -> Void) {
+    func getMovieData<T: Decodable>(api: Router,
+                                    type: T.Type,
+                                    completionHandler: @escaping (T) -> Void) {
         
         AF.request(
             api.endpoint,
@@ -23,7 +24,7 @@ final class NetworkManager {
             parameters: api.parameters,
             encoding: URLEncoding.queryString,
             headers: api.header
-        ).responseDecodable(of: TodayMovieData.self) { response in
+        ).responseDecodable(of: T.self) { response in
             switch response.result {
             case .success(let value):
                 completionHandler(value)
