@@ -24,8 +24,8 @@ final class MainViewController: BaseViewController<MainView> {
         super.viewDidLoad()
         
         // 오늘의 영화 데이터 불러오기
-        NetworkManager.shared.getTodayMovies(api: .TodayMovie) { value in
-            print(value)
+        NetworkManager.shared.getMovieData(api: .TodayMovie,
+                                           type: TodayMovieData.self) { value in
             self.todayMovies = value.results
         }
         
@@ -51,6 +51,8 @@ final class MainViewController: BaseViewController<MainView> {
     @objc func searchButtonTapped() {
         // 검색 화면 전환
         print(#function)
+        let vc = SearchViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc func profileViewTapped() {
