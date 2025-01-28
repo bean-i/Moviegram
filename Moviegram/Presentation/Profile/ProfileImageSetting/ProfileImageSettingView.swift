@@ -14,7 +14,7 @@ final class ProfileImageSettingView: BaseView {
     let cameraView = UIView()
     let cameraImageView = UIImageView()
     
-    var profileImageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: profileImageCollectionViewLayout())
+    let profileImageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: profileImageCollectionViewLayout())
     
     static func profileImageCollectionViewLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
