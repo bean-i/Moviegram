@@ -11,6 +11,10 @@ final class SearchViewController: BaseViewController<SearchView> {
     
     var searchMovies: [Movie] = []
     
+    var currentKeyword = ""
+    var currentPage = 1
+    var totalPage = 1
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // 얘 나중에 다른 데로 옮겨야 될 수도..
@@ -23,6 +27,7 @@ final class SearchViewController: BaseViewController<SearchView> {
         
         mainView.searchTableView.delegate = self
         mainView.searchTableView.dataSource = self
+        mainView.searchTableView.prefetchDataSource = self
         mainView.searchTableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.identifier)
         mainView.searchBar.delegate = self
     }
@@ -39,13 +44,16 @@ extension SearchViewController: UISearchBarDelegate {
         }
         
         // 네트워크 통신
-        NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: text),
+        NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: text, page: String(currentPage)),
                                            type: MovieSearchData.self) { value in
 //            print(value)
             // 검색 결과가 없으면
             if value.totalResults == 0 {
                 print("검색 결과가 없어용")
             } else {// 검색 결과가 있으면 테이블뷰 보여줭~
+                self.currentKeyword = text
+                self.currentPage = value.page
+                self.totalPage = value.totalPages
                 self.searchMovies = value.results
                 self.mainView.searchTableView.reloadData()
             }
@@ -85,6 +93,24 @@ extension SearchViewController: LikeButtonDelegate {
             if let index = UserInfo.storedMovieList.firstIndex(of: id) {
                 UserInfo.storedMovieList.remove(at: index)
                 UserInfo.shared.storedMovies = Array(UserInfo.storedMovieList) // 새로운 집합으로 업데이트
+            }
+        }
+    }
+    
+}
+
+extension SearchViewController: UITableViewDataSourcePrefetching {
+    
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            if indexPath.row == searchMovies.count - 2,
+               currentPage < totalPage {
+                currentPage += 1
+                
+                NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: currentKeyword, page: String(currentPage)), type: MovieSearchData.self) { value in
+                    self.searchMovies.append(contentsOf: value.results)
+                    self.mainView.searchTableView.reloadData()
+                }
             }
         }
     }
