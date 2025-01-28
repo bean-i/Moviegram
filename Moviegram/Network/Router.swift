@@ -11,10 +11,7 @@ import Alamofire
 enum Router {
     
     case TodayMovie
-    
-    var baseURL: String {
-        return "https://api.themoviedb.org/3"
-    }
+    case MovieSearch(keyword: String)
     
     var endpoint: URL {
         switch self {
