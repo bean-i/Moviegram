@@ -10,12 +10,7 @@ import SnapKit
 
 final class MainView: BaseView {
     
-    let profileView = UIView()
-    let profileImageView = ProfileImageCustomView()
-    let profileNickNameLabel = UILabel()
-    let joinDateLabel = UILabel()
-    let chevronButton = UIImageView()
-    let movieStorageButton = UIButton()
+    let profileView = ProfileView()
     
     let recentSearchLabel = UILabel()
     let deleteAllSearchKeywordButton = UIButton()
@@ -36,14 +31,6 @@ final class MainView: BaseView {
     }
     
     override func configureHierarchy() {
-        profileView.addSubViews(
-            profileImageView,
-            profileNickNameLabel,
-            joinDateLabel,
-            chevronButton,
-            movieStorageButton
-        )
-        
         recentSearchKeywordView.addSubViews(
             noRecentSearchLabel
         )
@@ -62,35 +49,6 @@ final class MainView: BaseView {
         profileView.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide).offset(10)
             make.horizontalEdges.equalToSuperview().inset(10)
-        }
-        
-        profileImageView.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().inset(15)
-            make.size.equalTo(60)
-        }
-        
-        profileNickNameLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(25)
-            make.leading.equalTo(profileImageView.snp.trailing).offset(10)
-        }
-        
-        joinDateLabel.snp.makeConstraints { make in
-            make.top.equalTo(profileNickNameLabel.snp.bottom).offset(3)
-            make.leading.equalTo(profileImageView.snp.trailing).offset(10)
-        }
-        
-        chevronButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(20)
-            make.trailing.equalToSuperview().inset(15)
-            make.width.equalTo(15)
-            make.height.equalTo(25)
-        }
-        
-        movieStorageButton.snp.makeConstraints { make in
-            make.top.equalTo(profileImageView.snp.bottom).offset(10)
-            make.bottom.equalToSuperview().inset(15)
-            make.horizontalEdges.equalToSuperview().inset(15)
-            make.height.equalTo(40)
         }
         
         recentSearchLabel.snp.makeConstraints { make in
@@ -128,25 +86,6 @@ final class MainView: BaseView {
     }
     
     override func configureView() {
-        profileView.isUserInteractionEnabled = true
-        profileView.backgroundColor = .customDarkGray
-        profileView.layer.cornerRadius = 15
-
-        profileImageView.isSelected = true
-        
-        profileNickNameLabel.font = .Font.large.of(weight: .heavy)
-        profileNickNameLabel.textColor = .white
-        
-        joinDateLabel.font = .Font.small.of(weight: .medium)
-        joinDateLabel.textColor = .gray
-        
-        chevronButton.image = UIImage(systemName: "chevron.right")
-        chevronButton.tintColor = .gray
-        
-        movieStorageButton.backgroundColor = .customTeal
-        movieStorageButton.layer.cornerRadius = 10
-        movieStorageButton.tintColor = .white
-        movieStorageButton.titleLabel?.font = .Font.medium.of(weight: .bold)
         
         recentSearchLabel.text = "최근검색어"
         recentSearchLabel.textColor = .white
@@ -171,21 +110,6 @@ final class MainView: BaseView {
         todayMovieCollectionView.collectionViewLayout = todayMovieCollectionViewLayout()
         todayMovieCollectionView.showsHorizontalScrollIndicator = false
         todayMovieCollectionView.backgroundColor = .black
-    }
-    
-    func configureData(data: UserInfo) {
-        guard let nickname = data.nickname,
-              let imageNumber = data.imageNumber,
-              let joinDate = data.joinDate,
-              let storedMovies = data.storedMovies else {
-            print("유저 인포 오류") // 얼럿 띄워줘야하나. . .?
-            return
-        }
-        
-        profileImageView.imageNumber = imageNumber
-        profileNickNameLabel.text = nickname
-        joinDateLabel.text = "\(joinDate) 가입"
-        movieStorageButton.setTitle("\(storedMovies.count)개의 무비박스 보관중", for: .normal)
     }
     
 }

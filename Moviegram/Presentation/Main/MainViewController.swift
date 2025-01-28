@@ -22,7 +22,8 @@ final class MainViewController: BaseViewController<MainView> {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        mainView.configureData(data: UserInfo.shared)
+        // 프로필 뷰에 유저 이미지 보여주기
+        mainView.profileView.configureData(data: UserInfo.shared)
     }
     
     override func viewDidLoad() {
@@ -38,9 +39,6 @@ final class MainViewController: BaseViewController<MainView> {
         mainView.todayMovieCollectionView.delegate = self
         mainView.todayMovieCollectionView.dataSource = self
         mainView.todayMovieCollectionView.register(TodayMovieCollectionViewCell.self, forCellWithReuseIdentifier: TodayMovieCollectionViewCell.identifier)
-        
-        // 프로필 뷰에 유저 이미지 보여주기
-        mainView.configureData(data: UserInfo.shared)
     
         mainView.profileView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileViewTapped)))
         
@@ -75,7 +73,7 @@ final class MainViewController: BaseViewController<MainView> {
 
 extension MainViewController: passUserInfoDelegate {
     func passUserInfo() {
-        mainView.configureData(data: UserInfo.shared)
+        mainView.profileView.configureData(data: UserInfo.shared)
     }
 }
 
@@ -111,7 +109,7 @@ extension MainViewController: LikeButtonDelegate {
             }
         }
         // 버튼 업데이트 시, 프로필 뷰 업데이트!
-        mainView.configureData(data: UserInfo.shared)
+        mainView.profileView.configureData(data: UserInfo.shared)
     }
     
 }
