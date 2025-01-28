@@ -11,7 +11,7 @@ import Alamofire
 enum Router {
     
     case TodayMovie
-    case MovieSearch(keyword: String)
+    case MovieSearch(keyword: String, page: String)
     
     var endpoint: URL {
         switch self {
@@ -42,12 +42,12 @@ enum Router {
                 "language": "ko-KR",
                 "page": "1"
             ]
-        case .MovieSearch(let keyword):
+        case .MovieSearch(let keyword, let page):
             return [
                 "query": keyword,
                 "include_adult": "false",
                 "language": "ko-KR",
-                "page": "1"
+                "page": page
             ]
         }
     }
