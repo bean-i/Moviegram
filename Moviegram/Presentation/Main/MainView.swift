@@ -129,7 +129,7 @@ final class MainView: BaseView {
     
     override func configureView() {
         profileView.isUserInteractionEnabled = true
-        profileView.backgroundColor = .customGray
+        profileView.backgroundColor = .customDarkGray
         profileView.layer.cornerRadius = 15
 
         profileImageView.isSelected = true
