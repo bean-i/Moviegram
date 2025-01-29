@@ -13,8 +13,6 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
     
     static let identifier = "TodayMovieCollectionViewCell"
     
-    weak var delegate: LikeButtonDelegate?
-    
     let moviePosterImage = UIImageView()
     
     let movieTitleLabel = UILabel()
@@ -70,8 +68,6 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
         movieTitleLabel.font = .Font.large.of(weight: .heavy)
         movieTitleLabel.textColor = .white
         
-        movieLikeButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        
         movieOverviewLabel.font = .Font.small.of(weight: .medium)
         movieOverviewLabel.textColor = .lightGray
         movieOverviewLabel.numberOfLines = 2
@@ -86,6 +82,8 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
             moviePosterImage.image = UIImage(systemName: "exclamationmark.triangle")
         }
         
+        movieLikeButton.id = data.id
+        
         // 현재 셀의 영화 id가 좋아요 영화 리스트에 저장되어 있으면 isSelected
         if UserInfo.storedMovieList.contains(data.id) {
             movieLikeButton.isSelected = true
@@ -95,11 +93,6 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
         
         movieTitleLabel.text = data.title
         movieOverviewLabel.text = data.overview
-    }
-    
-    @objc func buttonTapped() {
-        movieLikeButton.isSelected.toggle()
-        delegate?.likeButtonTapped(id: self.tag, isSelected: movieLikeButton.isSelected)
     }
     
 }
