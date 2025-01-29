@@ -12,6 +12,7 @@ enum Router {
     
     case TodayMovie
     case MovieSearch(keyword: String, page: String)
+    case MovieImage(id: Int)
     
     var endpoint: URL {
         switch self {
@@ -19,6 +20,8 @@ enum Router {
             return URL(string: TMDBAPI.baseURL + "/trending/movie/day")!
         case .MovieSearch:
             return URL(string: TMDBAPI.baseURL + "/search/movie")!
+        case .MovieImage(let id):
+            return URL(string: TMDBAPI.baseURL + "/movie/\(id)/images")!
         }
     }
     
@@ -31,6 +34,8 @@ enum Router {
         case .TodayMovie:
             return .get
         case .MovieSearch:
+            return .get
+        case .MovieImage:
             return .get
         }
     }
@@ -49,6 +54,8 @@ enum Router {
                 "language": "ko-KR",
                 "page": page
             ]
+        case .MovieImage:
+            return [:]
         }
     }
     
