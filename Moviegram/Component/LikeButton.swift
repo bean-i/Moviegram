@@ -13,9 +13,13 @@ protocol LikeButtonDelegate: AnyObject {
 
 final class LikeButton: UIButton {
     
+    weak var delegate: LikeButtonDelegate?
+    var id: Int?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureButton()
+        addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -30,6 +34,13 @@ final class LikeButton: UIButton {
         self.setImage(UIImage(systemName: "heart"), for: .normal)
         self.setImage(UIImage(systemName: "heart.fill"), for: .selected)
         self.tintColor = .point
+    }
+    
+    @objc func buttonTapped() {
+        isSelected.toggle()
+        if let id {
+            delegate?.likeButtonTapped(id: id, isSelected: isSelected)
+        }
     }
 
     

@@ -24,6 +24,7 @@ final class MainViewController: BaseViewController<MainView> {
         super.viewWillAppear(animated)
         // 프로필 뷰에 유저 이미지 보여주기
         mainView.profileView.configureData(data: UserInfo.shared)
+        mainView.todayMovieCollectionView.reloadData()
     }
     
     override func viewDidLoad() {
@@ -86,12 +87,18 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayMovieCollectionViewCell.identifier, for: indexPath) as! TodayMovieCollectionViewCell
         
-        // 영화 데이터 표시
-        cell.delegate = self
-        cell.tag = todayMovies[indexPath.item].id // 영화 id를 tag로 설정
+        cell.movieLikeButton.delegate = self
+        
         cell.configureData(data: todayMovies[indexPath.item])
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // 영화 상세 화면 전환
+        let vc = MovieDetailViewController()
+        vc.movieInfo = todayMovies[indexPath.item]
+        navigationController?.pushViewController(vc, animated: true)
     }
     
 }
