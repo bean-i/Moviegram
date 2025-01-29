@@ -45,6 +45,7 @@ final class SearchTableViewCell: BaseTableViewCell {
         
         movieTitleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(20)
+            make.trailing.equalToSuperview().inset(10)
             make.leading.equalTo(movieImageView.snp.trailing).offset(15)
         }
         
@@ -80,6 +81,7 @@ final class SearchTableViewCell: BaseTableViewCell {
         
         movieTitleLabel.font = .Font.large.of(weight: .bold)
         movieTitleLabel.textColor = .white
+        movieTitleLabel.textAlignment = .left
         movieTitleLabel.numberOfLines = 2
         
         movieReleaseLabel.font = .Font.medium.of(weight: .light)
