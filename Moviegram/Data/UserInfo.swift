@@ -8,6 +8,7 @@
 import Foundation
 
 enum UserInfoKey: String, CaseIterable {
+    case isRegisteredKey = "isRegistered"
     case nicknameKey = "nickname"
     case imageNumberKey = "imageNumber"
     case joinDateKey = "joinDate"
@@ -23,6 +24,15 @@ final class UserInfo {
     
     // 좋아요 누른 영화 리스트 + UserDefaults에 저장할 배열
     static var storedMovieList: Set<Int> = Set(UserInfo.shared.storedMovies ?? [])
+    
+    var isRegistered: Bool {
+        get {
+            UserDefaults.standard.bool(forKey: UserInfoKey.isRegisteredKey.rawValue)
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: UserInfoKey.isRegisteredKey.rawValue)
+        }
+    }
     
     var nickname: String? {
         get {

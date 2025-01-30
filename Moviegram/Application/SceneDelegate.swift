@@ -20,7 +20,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: scene)
         window?.windowScene = scene
         
-        let nav = UINavigationController(rootViewController: OnboardingViewController())
+        var nav = UIViewController()
+        
+        if UserInfo.shared.isRegistered {
+            nav = TabBarController()
+        } else {
+            nav = UINavigationController(rootViewController: OnboardingViewController())
+        }
         
         window?.rootViewController = nav
         window?.makeKeyAndVisible()
