@@ -19,6 +19,8 @@ final class SearchViewController: BaseViewController<SearchView> {
         super.viewWillAppear(animated)
         // 얘 나중에 다른 데로 옮겨야 될 수도..
         mainView.searchBar.becomeFirstResponder()
+        // 좋아요 업데이트
+        mainView.searchTableView.reloadData()
     }
 
     override func viewDidLoad() {
@@ -75,10 +77,16 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SearchTableViewCell.identifier, for: indexPath) as! SearchTableViewCell
         
-        cell.delegate = self
-        cell.tag = searchMovies[indexPath.row].id
+        cell.movieLikeButton.delegate = self
         cell.configureData(data: searchMovies[indexPath.row])
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // 영화 상세 화면
+        let vc = MovieDetailViewController()
+        vc.movieInfo = searchMovies[indexPath.row]
+        navigationController?.pushViewController(vc, animated: true)
     }
     
 }

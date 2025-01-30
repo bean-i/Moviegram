@@ -12,8 +12,6 @@ import SnapKit
 final class SearchTableViewCell: BaseTableViewCell {
     
     static let identifier = "SearchTableViewCell"
-    
-    weak var delegate: LikeButtonDelegate?
 
     let movieImageView = UIImageView()
     let movieTitleLabel = UILabel()
@@ -86,14 +84,6 @@ final class SearchTableViewCell: BaseTableViewCell {
         
         movieReleaseLabel.font = .Font.medium.of(weight: .light)
         movieReleaseLabel.textColor = .customLightGray
-
-        movieLikeButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-    }
-    
-    @objc func buttonTapped() {
-        print(#function)
-        movieLikeButton.isSelected.toggle()
-        delegate?.likeButtonTapped(id: self.tag, isSelected: movieLikeButton.isSelected)
     }
     
     func configureData(data: Movie) {
@@ -116,6 +106,7 @@ final class SearchTableViewCell: BaseTableViewCell {
             genreBox2.isHidden = true
         }
         
+        movieLikeButton.id = data.id
         
         if UserInfo.storedMovieList.contains(data.id) {
             movieLikeButton.isSelected = true
