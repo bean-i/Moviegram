@@ -16,7 +16,16 @@ enum SettingOptions: String, CaseIterable {
 
 final class SettingViewController: BaseViewController<SettingView> {
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        mainView.profileView.configureData(data: UserInfo.shared)
+    }
+    
     override func configureView() {
+        
+        // 프로필뷰 터치 시, 모달 띄우기
+        mainView.profileView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileViewTapped)))
+        
         navigationItem.title = "설정"
         mainView.profileView.configureData(data: UserInfo.shared)
         
@@ -39,7 +48,24 @@ final class SettingViewController: BaseViewController<SettingView> {
         window.rootViewController = UINavigationController(rootViewController: OnboardingViewController())
         window.makeKeyAndVisible()
     }
+    
+    @objc func profileViewTapped() {
+        let vc = ProfileSettingViewController()
+        vc.isEditMode = true
+        vc.delegate = self
+        let nav = UINavigationController(rootViewController: vc)
+        
+        nav.sheetPresentationController?.prefersGrabberVisible = true
+        
+        present(nav, animated: true)
+    }
 
+}
+
+extension SettingViewController: passUserInfoDelegate {
+    func passUserInfo() {
+        mainView.profileView.configureData(data: UserInfo.shared)
+    }
 }
 
 extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
