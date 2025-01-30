@@ -64,7 +64,6 @@ final class MovieDetailView: BaseView {
         }
         
         contentView.snp.makeConstraints { make in
-//            make.edges.equalTo(scrollView)
             make.width.equalToSuperview()
             make.verticalEdges.equalTo(scrollView)
             make.bottom.equalTo(posterCollectionView.snp.bottom).offset(10)
@@ -210,10 +209,18 @@ final class MovieDetailView: BaseView {
         return layout
     }
     
+    func convertSeeMoreButtonLabel(title: String) {
+        var titleContainer = AttributeContainer()
+        titleContainer.font = .Font.medium.of(weight: .bold)
+        seeMoreButton.configuration?.attributedTitle = AttributedString(title, attributes: titleContainer)
+    }
+    
     @objc func seeMoreButtonTapped() {
         if synopsisDetailLabel.numberOfLines == 0 {
+            convertSeeMoreButtonLabel(title: "More")
             synopsisDetailLabel.numberOfLines = 3
         } else {
+            convertSeeMoreButtonLabel(title: "Hide")
             synopsisDetailLabel.numberOfLines = 0
         }
     }
