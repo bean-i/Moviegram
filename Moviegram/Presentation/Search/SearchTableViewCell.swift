@@ -76,6 +76,7 @@ final class SearchTableViewCell: BaseTableViewCell {
         movieImageView.contentMode = .scaleAspectFill
         movieImageView.clipsToBounds = true
         movieImageView.layer.cornerRadius = 10
+        movieImageView.tintColor = .customGray
         
         movieTitleLabel.font = .Font.large.of(weight: .bold)
         movieTitleLabel.textColor = .white
@@ -92,6 +93,7 @@ final class SearchTableViewCell: BaseTableViewCell {
            let url = URL(string: TMDBAPI.imageBaseURL + posterURL) {
             movieImageView.kf.setImage(with: url)
         } else {
+            movieImageView.contentMode = .scaleAspectFit
             movieImageView.image = UIImage(systemName: "exclamationmark.triangle")
         }
         
