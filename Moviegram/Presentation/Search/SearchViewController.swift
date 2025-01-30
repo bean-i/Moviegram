@@ -47,7 +47,6 @@ extension SearchViewController: UISearchBarDelegate {
         
         // userdefaults의 최근 검색어에 저장
         UserInfo.shared.recentKeywords = [text]
-        print(UserInfo.shared.recentKeywords)
         
         // 네트워크 통신
         NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: text, page: String(currentPage)),
@@ -55,7 +54,6 @@ extension SearchViewController: UISearchBarDelegate {
             // 검색 결과가 없으면
             if value.totalResults == 0 {
                 self.mainView.searchResultLabel.isHidden = false
-                print("검색 결과가 없어용")
             } else {// 검색 결과가 있으면 테이블뷰 보여줭~
                 self.mainView.searchTableView.isHidden = false
                 self.currentKeyword = text
