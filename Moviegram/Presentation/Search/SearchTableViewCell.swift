@@ -104,6 +104,9 @@ final class SearchTableViewCell: BaseTableViewCell {
         } else if data.genreID.count == 1 {
             genreBox1.genreTitleId = data.genreID[0]
             genreBox2.isHidden = true
+        } else {
+            genreBox1.isHidden = true
+            genreBox2.isHidden = true
         }
         
         movieLikeButton.id = data.id
