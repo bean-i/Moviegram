@@ -37,18 +37,21 @@ final class SearchViewController: BaseViewController<SearchView> {
 }
 
 extension SearchViewController: UISearchBarDelegate {
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        print(#function)
-        
+
         guard let text = mainView.searchBar.text else {
             print("검색 오류")
             return
         }
         
+        // userdefaults의 최근 검색어에 저장
+        UserInfo.shared.recentKeywords = [text]
+        print(UserInfo.shared.recentKeywords)
+        
         // 네트워크 통신
         NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: text, page: String(currentPage)),
                                            type: MovieSearchData.self) { value in
-//            print(value)
             // 검색 결과가 없으면
             if value.totalResults == 0 {
                 self.mainView.searchResultLabel.isHidden = false
