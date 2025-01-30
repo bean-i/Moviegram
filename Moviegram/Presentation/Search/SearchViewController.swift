@@ -33,6 +33,23 @@ final class SearchViewController: BaseViewController<SearchView> {
         mainView.searchTableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.identifier)
         mainView.searchBar.delegate = self
     }
+    
+    func getData() {
+        NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: currentKeyword, page: String(currentPage)),
+                                           type: MovieSearchData.self) { value in
+            // 검색 결과가 없으면
+            if value.totalResults == 0 {
+                self.mainView.searchResultLabel.isHidden = false
+            } else {// 검색 결과가 있으면 테이블뷰 보여줭~
+                self.mainView.searchTableView.isHidden = false
+                self.currentPage = value.page
+                self.totalPage = value.totalPages
+                self.searchMovies = value.results
+                self.mainView.searchTableView.reloadData()
+            }
+            
+        }
+    }
 
 }
 
@@ -48,22 +65,9 @@ extension SearchViewController: UISearchBarDelegate {
         // userdefaults의 최근 검색어에 저장
         UserInfo.shared.recentKeywords = [text]
         
+        currentKeyword = text
         // 네트워크 통신
-        NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: text, page: String(currentPage)),
-                                           type: MovieSearchData.self) { value in
-            // 검색 결과가 없으면
-            if value.totalResults == 0 {
-                self.mainView.searchResultLabel.isHidden = false
-            } else {// 검색 결과가 있으면 테이블뷰 보여줭~
-                self.mainView.searchTableView.isHidden = false
-                self.currentKeyword = text
-                self.currentPage = value.page
-                self.totalPage = value.totalPages
-                self.searchMovies = value.results
-                self.mainView.searchTableView.reloadData()
-            }
-            
-        }
+        getData()
     }
 }
 

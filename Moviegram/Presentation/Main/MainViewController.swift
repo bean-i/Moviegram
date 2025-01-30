@@ -170,10 +170,26 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // 영화 상세 화면 전환
-        let vc = MovieDetailViewController()
-        vc.movieInfo = todayMovies[indexPath.item]
-        navigationController?.pushViewController(vc, animated: true)
+        
+        switch collectionView {
+        case mainView.recentKeywordCollectionView:
+            // 검색 결과 화면 전환
+            let vc = SearchViewController()
+            vc.currentKeyword = recentKeywords[indexPath.item]
+            vc.mainView.searchBar.text = recentKeywords[indexPath.item]
+            vc.getData()
+            navigationController?.pushViewController(vc, animated: true)
+            
+        case mainView.todayMovieCollectionView:
+            // 영화 상세 화면 전환
+            let vc = MovieDetailViewController()
+            vc.movieInfo = todayMovies[indexPath.item]
+            navigationController?.pushViewController(vc, animated: true)
+        
+        default:
+            return
+        }
+
     }
     
 }
