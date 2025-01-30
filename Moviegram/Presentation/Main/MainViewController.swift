@@ -20,11 +20,20 @@ final class MainViewController: BaseViewController<MainView> {
         }
     }
     
+    // 최근 검색 키워드
+    var recentKeywords: [String] = []
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // 프로필 뷰에 유저 이미지 보여주기
         mainView.profileView.configureData(data: UserInfo.shared)
         mainView.todayMovieCollectionView.reloadData()
+        // 최근 검색어 업데이트
+        recentKeywords = UserInfo.shared.recentKeywords?.reversed() ?? []
+        mainView.recentKeywordCollectionView.reloadData()
+        
+        // 최근 검색어 있으면, 컬렉션뷰 보여주고, 없으면 레이블 보여주기
+        updateRecentKeywordView()
     }
     
     override func viewDidLoad() {
@@ -37,11 +46,21 @@ final class MainViewController: BaseViewController<MainView> {
         }
         
         // delegate 설정
+        // 1) 오늘의 영화
         mainView.todayMovieCollectionView.delegate = self
         mainView.todayMovieCollectionView.dataSource = self
         mainView.todayMovieCollectionView.register(TodayMovieCollectionViewCell.self, forCellWithReuseIdentifier: TodayMovieCollectionViewCell.identifier)
     
+        // 2) 최근 검색어
+        mainView.recentKeywordCollectionView.delegate = self
+        mainView.recentKeywordCollectionView.dataSource = self
+        mainView.recentKeywordCollectionView.register(RecentKeywordCollectionViewCell.self, forCellWithReuseIdentifier: RecentKeywordCollectionViewCell.identifier)
+        
+        // 프로필뷰 터치 시, 모달 띄우기
         mainView.profileView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileViewTapped)))
+        
+        // 전체삭제 버튼 터치 시, 최근 검색어 내역 리셋
+        mainView.deleteAllSearchKeywordButton.addTarget(self, action: #selector(deleteAllSearchKeywordButtonTapped), for: .touchUpInside)
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "magnifyingglass"),
@@ -52,9 +71,26 @@ final class MainViewController: BaseViewController<MainView> {
         navigationItem.title = "Moviegram"
     }
     
+    func updateRecentKeywordView() {
+        if recentKeywords.count > 0 {
+            mainView.recentKeywordCollectionView.isHidden = false
+            mainView.noRecentSearchLabel.isHidden = true
+        } else {
+            mainView.recentKeywordCollectionView.isHidden = true
+            mainView.noRecentSearchLabel.isHidden = false
+        }
+    }
+    
+    @objc func deleteAllSearchKeywordButtonTapped() {
+        // userdefaults에 저장 된 정보 삭제
+        UserDefaults.standard.removeObject(forKey: UserInfoKey.recentKeywordsKey.rawValue)
+        recentKeywords = []
+        // ui 업데이트
+        updateRecentKeywordView()
+    }
+    
     @objc func searchButtonTapped() {
         // 검색 화면 전환
-        print(#function)
         let vc = SearchViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -78,20 +114,59 @@ extension MainViewController: passUserInfoDelegate {
     }
 }
 
-extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return todayMovies.count
+        
+        switch collectionView {
+        case mainView.recentKeywordCollectionView:
+            return recentKeywords.count
+        case mainView.todayMovieCollectionView:
+            return todayMovies.count
+        default:
+            return 0
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayMovieCollectionViewCell.identifier, for: indexPath) as! TodayMovieCollectionViewCell
+
+        switch collectionView {
+        case mainView.recentKeywordCollectionView:
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentKeywordCollectionViewCell.identifier, for: indexPath) as! RecentKeywordCollectionViewCell
+            cell.keywordLabel.text = recentKeywords[indexPath.item]
+            return cell
+            
+        case mainView.todayMovieCollectionView:
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayMovieCollectionViewCell.identifier, for: indexPath) as! TodayMovieCollectionViewCell
+            cell.movieLikeButton.delegate = self
+            cell.configureData(data: todayMovies[indexPath.item])
+            return cell
+            
+        default:
+            return UICollectionViewCell()
+        }
         
-        cell.movieLikeButton.delegate = self
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        cell.configureData(data: todayMovies[indexPath.item])
-        
-        return cell
+        switch collectionView{
+        case mainView.recentKeywordCollectionView:
+            let text = recentKeywords[indexPath.item]
+            let attributes = [NSAttributedString.Key.font: UIFont.Font.medium.of(weight: .medium)]
+            let textSize = (text as NSString).size(withAttributes: attributes as [NSAttributedString.Key: Any])
+            return CGSize(width: textSize.width + 40, height: 30)
+            
+        case mainView.todayMovieCollectionView:
+            return CGSize(width: 210, height: 380)
+            
+        default:
+            return .zero
+        }
+ 
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

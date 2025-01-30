@@ -16,6 +16,7 @@ final class MainView: BaseView {
     let deleteAllSearchKeywordButton = UIButton()
     let recentSearchKeywordView = UIView()
     let noRecentSearchLabel = UILabel()
+    let recentKeywordCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
     let todayMovieLabel = UILabel()
     let todayMovieCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
@@ -30,9 +31,18 @@ final class MainView: BaseView {
         return layout
     }
     
+    func recentKeywordCollectionViewLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        return layout
+    }
+    
     override func configureHierarchy() {
         recentSearchKeywordView.addSubViews(
-            noRecentSearchLabel
+            noRecentSearchLabel,
+            recentKeywordCollectionView
         )
         
         addSubViews(
@@ -71,6 +81,10 @@ final class MainView: BaseView {
             make.center.equalToSuperview()
         }
         
+        recentKeywordCollectionView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         todayMovieLabel.snp.makeConstraints { make in
             make.top.equalTo(recentSearchKeywordView.snp.bottom).offset(20)
             make.leading.equalToSuperview().inset(10)
@@ -99,9 +113,13 @@ final class MainView: BaseView {
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         deleteAllSearchKeywordButton.configuration = config
         
+        noRecentSearchLabel.isHidden = true
         noRecentSearchLabel.text = "최근 검색어 내역이 없습니다."
         noRecentSearchLabel.textColor = .gray
         noRecentSearchLabel.font = .Font.small.of(weight: .medium)
+        
+        recentKeywordCollectionView.collectionViewLayout = recentKeywordCollectionViewLayout()
+        recentKeywordCollectionView.backgroundColor = .black
         
         todayMovieLabel.text = "오늘의 영화"
         todayMovieLabel.textColor = .white
