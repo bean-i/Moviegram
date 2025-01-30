@@ -156,6 +156,9 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
             UserInfo.shared.joinDate = DateFormatter.stringFromDate(Date())
             UserInfo.shared.storedMovies = []
             
+            // userdefaults isRegistered true로 설정
+            UserInfo.shared.isRegistered = true
+            
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                   let window = windowScene.windows.first else { return }
             window.rootViewController = TabBarController()
