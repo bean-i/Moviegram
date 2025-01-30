@@ -14,7 +14,11 @@ final class MovieDetailView: BaseView {
     let contentView = UIView()
     
     let backdropCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
-    let movieInfoLabel = UILabel()
+    
+    let movieInfoStackView = UIStackView()
+    let releaseView = MovieInfoView()
+    let rateView = MovieInfoView()
+    let genreView = MovieInfoView()
     
     let synopsisLabel = UILabel()
     let seeMoreButton = UIButton()
@@ -26,11 +30,19 @@ final class MovieDetailView: BaseView {
     let posterLabel = UILabel()
     let posterCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
-    
     override func configureHierarchy() {
+        
+        movieInfoStackView.addArrangedSubviews(
+            releaseView,
+            DistributeView(),
+            rateView,
+            DistributeView(),
+            genreView
+        )
+        
         contentView.addSubViews(
             backdropCollectionView,
-            movieInfoLabel,
+            movieInfoStackView,
             synopsisLabel,
             seeMoreButton,
             synopsisDetailLabel,
@@ -52,8 +64,9 @@ final class MovieDetailView: BaseView {
         }
         
         contentView.snp.makeConstraints { make in
-            make.edges.equalTo(scrollView)
+//            make.edges.equalTo(scrollView)
             make.width.equalToSuperview()
+            make.verticalEdges.equalTo(scrollView)
             make.bottom.equalTo(posterCollectionView.snp.bottom).offset(10)
         }
         
@@ -62,18 +75,18 @@ final class MovieDetailView: BaseView {
             make.height.equalTo(300)
         }
         
-        movieInfoLabel.snp.makeConstraints { make in
+        movieInfoStackView.snp.makeConstraints { make in
             make.top.equalTo(backdropCollectionView.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview().inset(30)
+            make.centerX.equalToSuperview()
         }
         
         synopsisLabel.snp.makeConstraints { make in
-            make.top.equalTo(movieInfoLabel.snp.bottom).offset(20)
+            make.top.equalTo(movieInfoStackView.snp.bottom).offset(20)
             make.leading.equalToSuperview().inset(10)
         }
         
         seeMoreButton.snp.makeConstraints { make in
-            make.top.equalTo(movieInfoLabel.snp.bottom).offset(20)
+            make.top.equalTo(movieInfoStackView.snp.bottom).offset(20)
             make.trailing.equalToSuperview().inset(10)
         }
         
@@ -110,8 +123,9 @@ final class MovieDetailView: BaseView {
         backdropCollectionView.isPagingEnabled = true
         backdropCollectionView.backgroundColor = .black
         
-        movieInfoLabel.font = .Font.small.of(weight: .light)
-        movieInfoLabel.textColor = .customLightGray
+        movieInfoStackView.axis = .horizontal
+        movieInfoStackView.alignment = .center
+        movieInfoStackView.spacing = 10
         
         synopsisLabel.text = "Synopsis"
         synopsisLabel.textColor = .white
@@ -151,7 +165,17 @@ final class MovieDetailView: BaseView {
         let date = data.releaseDate
         let rate = data.averageRating
         let genreID = data.genreID.prefix(2)
-        movieInfoLabel.text = "\(date) \(rate)  \(genreID)"
+        var genre = ""
+        
+        if genreID.count == 2 {
+            genre = Genre.getGenre(id: genreID[0]) + ", " + Genre.getGenre(id: genreID[1])
+        } else if genreID.count == 1 {
+            genre = Genre.getGenre(id: genreID[0])
+        }
+
+        releaseView.configureData(image: "calendar", text: date)
+        rateView.configureData(image: "star.fill", text: String(rate))
+        genreView.configureData(image: "film.fill", text: genre)
         
         synopsisDetailLabel.text = data.overview
         synopsisDetailLabel.numberOfLines = 3

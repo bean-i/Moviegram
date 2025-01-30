@@ -57,7 +57,6 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
         
         // 캐스트 네트워크
         NetworkManager.shared.getMovieData(api: .Cast(id: movieInfo.id), type: CreditData.self) { value in
-            print(value)
             self.castInfos = value.cast
             self.mainView.castCollectionView.reloadData()
         }
