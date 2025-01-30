@@ -15,6 +15,7 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
     
     var backdropImages: [ImagePath] = []
     var castInfos: [Cast] = []
+    var posterImages: [ImagePath] = []
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -43,11 +44,15 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
         title = movieInfo.title
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: likeButton)
         
-        // 백드롭 이미지 네트워크
+        // 백드롭 + 포스터 이미지 네트워크
         NetworkManager.shared.getMovieData(api: .MovieImage(id: movieInfo.id), type: MovieImageData.self) { value in
             // 백드롭 이미지 5개까지만 넣기
             self.backdropImages = Array(value.backdrops.prefix(5))
             self.mainView.backdropCollectionView.reloadData()
+            
+            // 포스터 이미지
+            self.posterImages = value.posters
+            self.mainView.posterCollectionView.reloadData()
         }
         
         // 캐스트 네트워크
@@ -69,6 +74,11 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
         mainView.castCollectionView.dataSource = self
         mainView.castCollectionView.register(CastCollectionViewCell.self, forCellWithReuseIdentifier: CastCollectionViewCell.identifier)
         
+        // 3) 포스터 컬렉션뷰
+        mainView.posterCollectionView.delegate = self
+        mainView.posterCollectionView.dataSource = self
+        mainView.posterCollectionView.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: PosterCollectionViewCell.identifier)
+        
         // 영화 상세 정보 나타내기
         mainView.configureData(data: movieInfo)
         
@@ -85,6 +95,8 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
             return backdropImages.count
         case mainView.castCollectionView:
             return castInfos.count
+        case mainView.posterCollectionView:
+            return posterImages.count
         default:
             return 0
         }
@@ -104,6 +116,12 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.identifier, for: indexPath) as! CastCollectionViewCell
             cell.configureData(data: castInfos[indexPath.item])
+            return cell
+            
+        case mainView.posterCollectionView:
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterCollectionViewCell.identifier, for: indexPath) as! PosterCollectionViewCell
+            cell.configureData(url: posterImages[indexPath.item].file_path)
             return cell
             
         default:

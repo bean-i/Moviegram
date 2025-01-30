@@ -23,6 +23,9 @@ final class MovieDetailView: BaseView {
     let castLabel = UILabel()
     let castCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
+    let posterLabel = UILabel()
+    let posterCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
+    
     
     override func configureHierarchy() {
         contentView.addSubViews(
@@ -32,7 +35,9 @@ final class MovieDetailView: BaseView {
             seeMoreButton,
             synopsisDetailLabel,
             castLabel,
-            castCollectionView
+            castCollectionView,
+            posterLabel,
+            posterCollectionView
         )
         
         scrollView.addSubview(contentView)
@@ -49,7 +54,7 @@ final class MovieDetailView: BaseView {
         contentView.snp.makeConstraints { make in
             make.edges.equalTo(scrollView)
             make.width.equalToSuperview()
-            make.bottom.equalTo(castCollectionView.snp.bottom)
+            make.bottom.equalTo(posterCollectionView.snp.bottom).offset(10)
         }
         
         backdropCollectionView.snp.makeConstraints { make in
@@ -73,7 +78,7 @@ final class MovieDetailView: BaseView {
         }
         
         synopsisDetailLabel.snp.makeConstraints { make in
-            make.top.equalTo(synopsisLabel.snp.bottom).offset(5)
+            make.top.equalTo(synopsisLabel.snp.bottom).offset(10)
             make.leading.trailing.equalToSuperview().inset(10)
         }
         
@@ -83,11 +88,21 @@ final class MovieDetailView: BaseView {
         }
         
         castCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(castLabel.snp.bottom).offset(5)
+            make.top.equalTo(castLabel.snp.bottom).offset(10)
             make.horizontalEdges.equalToSuperview()
             make.height.equalTo(135)
         }
         
+        posterLabel.snp.makeConstraints { make in
+            make.top.equalTo(castCollectionView.snp.bottom).offset(20)
+            make.leading.equalToSuperview().inset(10)
+        }
+        
+        posterCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(posterLabel.snp.bottom).offset(10)
+            make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(160)
+        }
     }
     
     override func configureView() {
@@ -122,6 +137,14 @@ final class MovieDetailView: BaseView {
         castCollectionView.collectionViewLayout = castCollectionViewLayout()
         castCollectionView.backgroundColor = .black
         
+        posterLabel.text = "Poster"
+        posterLabel.textColor = .white
+        posterLabel.font = .Font.large.of(weight: .bold)
+        
+        posterCollectionView.collectionViewLayout = posterCollectionViewLayout()
+        posterCollectionView.backgroundColor = .black
+        
+        
     }
     
     func configureData(data: Movie) {
@@ -151,6 +174,15 @@ final class MovieDetailView: BaseView {
         layout.minimumInteritemSpacing = 15
         layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         layout.itemSize = CGSize(width: 200, height: 60)
+        return layout
+    }
+    
+    func posterCollectionViewLayout() -> UICollectionViewLayout{
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        layout.itemSize = CGSize(width: 120, height: 160)
         return layout
     }
     
