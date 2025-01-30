@@ -51,8 +51,10 @@ extension SearchViewController: UISearchBarDelegate {
 //            print(value)
             // 검색 결과가 없으면
             if value.totalResults == 0 {
+                self.mainView.searchResultLabel.isHidden = false
                 print("검색 결과가 없어용")
             } else {// 검색 결과가 있으면 테이블뷰 보여줭~
+                self.mainView.searchTableView.isHidden = false
                 self.currentKeyword = text
                 self.currentPage = value.page
                 self.totalPage = value.totalPages

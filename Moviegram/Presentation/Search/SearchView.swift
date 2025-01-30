@@ -11,11 +11,13 @@ import SnapKit
 final class SearchView: BaseView {
 
     let searchBar = UISearchBar()
+    let searchResultLabel = UILabel()
     let searchTableView = UITableView()
     
     override func configureHierarchy() {
         addSubViews(
             searchBar,
+            searchResultLabel,
             searchTableView
         )
     }
@@ -24,6 +26,10 @@ final class SearchView: BaseView {
         searchBar.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide)
             make.horizontalEdges.equalToSuperview()
+        }
+        
+        searchResultLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
         
         searchTableView.snp.makeConstraints { make in
@@ -41,9 +47,15 @@ final class SearchView: BaseView {
         searchBar.searchTextField.leftView?.tintColor = .customGray
         searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "영화를 검색해보세요.", attributes: [.foregroundColor : UIColor.customGray])
         
+        searchResultLabel.text = "원하는 검색결과를 찾지 못했습니다"
+        searchResultLabel.font = .Font.medium.of(weight: .medium)
+        searchResultLabel.textColor = .customLightGray
+        searchResultLabel.isHidden = true
+        
         searchTableView.backgroundColor = .black
         searchTableView.separatorColor = .customGray
         searchTableView.separatorInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        searchTableView.isHidden = true
     }
     
 }
