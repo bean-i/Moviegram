@@ -21,6 +21,7 @@ final class MovieDetailView: BaseView {
     let synopsisDetailLabel = UILabel()
     
     let castLabel = UILabel()
+    let castCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
     
     override func configureHierarchy() {
@@ -29,7 +30,9 @@ final class MovieDetailView: BaseView {
             movieInfoLabel,
             synopsisLabel,
             seeMoreButton,
-            synopsisDetailLabel
+            synopsisDetailLabel,
+            castLabel,
+            castCollectionView
         )
         
         scrollView.addSubview(contentView)
@@ -43,7 +46,11 @@ final class MovieDetailView: BaseView {
             make.edges.equalTo(safeAreaLayoutGuide)
         }
         
-        
+        contentView.snp.makeConstraints { make in
+            make.edges.equalTo(scrollView)
+            make.width.equalToSuperview()
+            make.bottom.equalTo(castCollectionView.snp.bottom)
+        }
         
         backdropCollectionView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview()
@@ -70,10 +77,15 @@ final class MovieDetailView: BaseView {
             make.leading.trailing.equalToSuperview().inset(10)
         }
         
-        contentView.snp.makeConstraints { make in
-            make.edges.equalTo(scrollView)
-            make.width.equalToSuperview()
-            make.bottom.equalTo(synopsisDetailLabel.snp.bottom)
+        castLabel.snp.makeConstraints { make in
+            make.top.equalTo(synopsisDetailLabel.snp.bottom).offset(20)
+            make.leading.equalToSuperview().inset(10)
+        }
+        
+        castCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(castLabel.snp.bottom).offset(5)
+            make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(135)
         }
         
     }
@@ -103,6 +115,13 @@ final class MovieDetailView: BaseView {
         seeMoreButton.configuration = config
         seeMoreButton.addTarget(self, action: #selector(seeMoreButtonTapped), for: .touchUpInside)
         
+        castLabel.text = "Cast"
+        castLabel.textColor = .white
+        castLabel.font = .Font.large.of(weight: .bold)
+        
+        castCollectionView.collectionViewLayout = castCollectionViewLayout()
+        castCollectionView.backgroundColor = .black
+        
     }
     
     func configureData(data: Movie) {
@@ -115,16 +134,6 @@ final class MovieDetailView: BaseView {
         synopsisDetailLabel.numberOfLines = 3
     }
     
-    @objc func seeMoreButtonTapped() {
-        if synopsisDetailLabel.numberOfLines == 0 {
-            synopsisDetailLabel.numberOfLines = 3
-        } else {
-            synopsisDetailLabel.numberOfLines = 0
-        }
-        
-    }
-    
-    
     func backdropCollectionViewLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         let deviceWidth = UIScreen.main.bounds.width
@@ -133,6 +142,24 @@ final class MovieDetailView: BaseView {
         layout.minimumInteritemSpacing = 0
         layout.itemSize = CGSize(width: deviceWidth, height: 300)
         return layout
+    }
+    
+    func castCollectionViewLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 20
+        layout.minimumInteritemSpacing = 15
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        layout.itemSize = CGSize(width: 200, height: 60)
+        return layout
+    }
+    
+    @objc func seeMoreButtonTapped() {
+        if synopsisDetailLabel.numberOfLines == 0 {
+            synopsisDetailLabel.numberOfLines = 3
+        } else {
+            synopsisDetailLabel.numberOfLines = 0
+        }
     }
 
 }
