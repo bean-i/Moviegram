@@ -12,6 +12,7 @@ enum UserInfoKey: String, CaseIterable {
     case imageNumberKey = "imageNumber"
     case joinDateKey = "joinDate"
     case storedMoviesKey = "storedMovies"
+    case recentKeywordsKey = "recentKeywords"
 }
 
 final class UserInfo {
@@ -61,6 +62,24 @@ final class UserInfo {
                 }
                 UserDefaults.standard.set(Array(UserInfo.storedMovieList), forKey: UserInfoKey.storedMoviesKey.rawValue)
             }
+        }
+    }
+    
+    var recentKeywords: [String]? {
+        get {
+            UserDefaults.standard.stringArray(forKey: UserInfoKey.recentKeywordsKey.rawValue) ?? []
+        }
+        set {
+            var newKeywords = recentKeywords
+            
+            if let addKeywords = newValue {
+                for keyword in addKeywords {
+                    newKeywords?.append(keyword)
+                }
+            }
+            
+            UserDefaults.standard.set(newKeywords, forKey: UserInfoKey.recentKeywordsKey.rawValue)
+            
         }
     }
     
