@@ -49,6 +49,8 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
             // 백드롭 이미지 5개까지만 넣기
             self.backdropImages = Array(value.backdrops.prefix(5))
             self.mainView.backdropCollectionView.reloadData()
+            // pagecontrol 개수 지정
+            self.mainView.pageControl.numberOfPages = self.backdropImages.count
             
             // 포스터 이미지
             self.posterImages = value.posters
@@ -60,7 +62,6 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
             self.castInfos = value.cast
             self.mainView.castCollectionView.reloadData()
         }
-        
         
         // 컬렉션뷰 딜리게이트
         // 1) 백드롭 컬렉션뷰
@@ -80,7 +81,6 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
         
         // 영화 상세 정보 나타내기
         mainView.configureData(data: movieInfo)
-        
     }
 
 }
@@ -102,7 +102,6 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         
         switch collectionView {
         case mainView.backdropCollectionView:
@@ -126,10 +125,15 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
         default:
             return UICollectionViewCell()
         }
-        
-    
     }
     
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        if scrollView == mainView.backdropCollectionView {
+            let deviceWidth = UIScreen.main.bounds.width
+            let page = Int(targetContentOffset.pointee.x / deviceWidth)
+            mainView.pageControl.currentPage = page
+        }
+    }
     
 }
 

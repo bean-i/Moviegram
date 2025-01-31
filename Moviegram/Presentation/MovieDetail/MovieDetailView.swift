@@ -14,6 +14,7 @@ final class MovieDetailView: BaseView {
     let contentView = UIView()
     
     let backdropCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
+    let pageControl = UIPageControl()
     
     let movieInfoStackView = UIStackView()
     let releaseView = MovieInfoView()
@@ -42,6 +43,7 @@ final class MovieDetailView: BaseView {
         
         contentView.addSubViews(
             backdropCollectionView,
+            pageControl,
             movieInfoStackView,
             synopsisLabel,
             seeMoreButton,
@@ -72,6 +74,11 @@ final class MovieDetailView: BaseView {
         backdropCollectionView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview()
             make.height.equalTo(300)
+        }
+        
+        pageControl.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(backdropCollectionView.snp.bottom).offset(-10)
         }
         
         movieInfoStackView.snp.makeConstraints { make in
@@ -121,6 +128,12 @@ final class MovieDetailView: BaseView {
         backdropCollectionView.collectionViewLayout = backdropCollectionViewLayout()
         backdropCollectionView.isPagingEnabled = true
         backdropCollectionView.backgroundColor = .black
+        backdropCollectionView.showsHorizontalScrollIndicator = false
+        
+        pageControl.currentPageIndicatorTintColor = .white
+        pageControl.pageIndicatorTintColor = .customGray
+        pageControl.backgroundColor = .darkGray
+        pageControl.layer.cornerRadius = 13
         
         movieInfoStackView.axis = .horizontal
         movieInfoStackView.alignment = .center
@@ -149,6 +162,7 @@ final class MovieDetailView: BaseView {
         
         castCollectionView.collectionViewLayout = castCollectionViewLayout()
         castCollectionView.backgroundColor = .black
+        castCollectionView.showsHorizontalScrollIndicator = false
         
         posterLabel.text = "Poster"
         posterLabel.textColor = .white
@@ -156,7 +170,7 @@ final class MovieDetailView: BaseView {
         
         posterCollectionView.collectionViewLayout = posterCollectionViewLayout()
         posterCollectionView.backgroundColor = .black
-        
+        posterCollectionView.showsHorizontalScrollIndicator = false
         
     }
     
