@@ -17,15 +17,17 @@ final class SearchViewController: BaseViewController<SearchView> {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // 얘 나중에 다른 데로 옮겨야 될 수도..
-        mainView.searchBar.becomeFirstResponder()
         // 좋아요 업데이트
         mainView.searchTableView.reloadData()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        mainView.searchBar.becomeFirstResponder()
+        
         title = "영화 검색"
+        
+        self.dismissKeyboardWhenTapped()
         
         mainView.searchTableView.delegate = self
         mainView.searchTableView.dataSource = self
