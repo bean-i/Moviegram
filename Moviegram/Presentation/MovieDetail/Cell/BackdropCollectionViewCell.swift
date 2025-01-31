@@ -6,15 +6,19 @@
 //
 
 import UIKit
+
 import Kingfisher
 import SnapKit
 
+// MARK: - 백드롭 CollectionViewCell
 final class BackdropCollectionViewCell: BaseCollectionViewCell {
     
+    // MARK: - Properties
     static let identifier = "BackdropCollectionViewCell"
     
     private let backdropImageView = UIImageView()
     
+    // MARK: - Configure UI
     override func configureHierarchy() {
         addSubview(backdropImageView)
     }
@@ -31,6 +35,7 @@ final class BackdropCollectionViewCell: BaseCollectionViewCell {
         backdropImageView.contentMode = .scaleAspectFill
     }
     
+    // MARK: - Configure Data
     func configureData(url: String) {
         
         if let url = URL(string: TMDBAPI.imageBaseURL + url) {

@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - 닉네임 조건 상태
 enum ConditionStatus {
     case approve
     case lengthLimit
@@ -27,18 +28,53 @@ enum ConditionStatus {
     }
 }
 
+// MARK: - 프로필 설정 ViewController
 final class ProfileSettingViewController: BaseViewController<ProfileSettingView> {
     
+    // MARK: - Properties
     private var randomImageNumber = Int.random(in: 0...11)
     private let forbiddenStrings: [Character] = ["@", "#", "$", "%"]
-    var isEditMode = false {
-        didSet {
-            if isEditMode {
-                editModeNavigationBar()
-            }
+    var isEditMode = false
+    weak var delegate: passUserInfoDelegate?
+    
+    // MARK: - Configure
+    override func configureView() {
+        if isEditMode {
+            editModeNavigationBar()
+            configureEditModeView()
+            title = "프로필 편집"
+        } else {
+            configureSettingModeView()
+            title = "프로필 설정"
         }
     }
-    weak var delegate: passUserInfoDelegate?
+    
+    override func configureGesture() {
+        self.dismissKeyboardWhenTapped()
+        
+        mainView.nicknameTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        
+        mainView.completionButton.addTarget(self, action: #selector(completionButtonTapped), for: .touchUpInside)
+        
+        mainView.profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileImageTapped)))
+        mainView.cameraView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileImageTapped)))
+    }
+    
+    // MARK: - Methods: UI
+    private func configureEditModeView() {
+        mainView.completionButton.isHidden = true
+        if let userImageNumber = UserInfo.shared.imageNumber,
+           let userNickname = UserInfo.shared.nickname {
+            randomImageNumber = userImageNumber
+            mainView.profileImageView.imageNumber = randomImageNumber
+            mainView.nicknameTextField.text = userNickname
+        }
+    }
+    
+    private func configureSettingModeView() {
+        mainView.completionButton.isHidden = false
+        mainView.profileImageView.imageNumber = randomImageNumber
+    }
     
     private func editModeNavigationBar() {
         title =  "프로필 편집"
@@ -57,39 +93,7 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
         )
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.dismissKeyboardWhenTapped()
-        title = isEditMode ? "프로필 편집" : "프로필 설정"
-    }
-    
-    override func configureView() {
-        
-        if isEditMode {
-            mainView.completionButton.isHidden = true
-            if let userImageNumber = UserInfo.shared.imageNumber,
-               let userNickname = UserInfo.shared.nickname {
-                randomImageNumber = userImageNumber
-                mainView.profileImageView.imageNumber = randomImageNumber
-                mainView.nicknameTextField.text = userNickname
-            }
-            
-        } else {
-            mainView.completionButton.isHidden = false
-            mainView.profileImageView.imageNumber = randomImageNumber
-        }
-        
-        mainView.nicknameTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-        
-        mainView.completionButton.addTarget(self, action: #selector(completionButtonTapped), for: .touchUpInside)
-        
-        mainView.profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileImageTapped)))
-        mainView.cameraView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileImageTapped)))
-        
-    }
-    
     @objc func profileImageTapped() {
-        print(#function)
         // 프로필 이미지 설정 화면으로 전환
         let vc = ProfileImageSettingViewController()
         vc.title = isEditMode ? "프로필 이미지 편집" : "프로필 이미지 설정"
@@ -101,9 +105,17 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
         navigationController?.pushViewController(vc, animated: true)
     }
     
+    @objc func cancelButtonTapped() {
+        dismiss(animated: true)
+    }
+    
+    // MARK: - Methods - 닉네임 설정
     @objc func textFieldDidChange(_ textField: UITextField) {
         guard let text = textField.text else {
-            print("검사하지 않음")
+            showAlert(
+                title: "텍스트 오류",
+                message: "검색어를 다시 작성해 주세요.",
+                cancel: false) { }
             return
         }
 
@@ -142,22 +154,16 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     }
     
     @objc func completionButtonTapped() {
-        print(#function, isEditMode)
         // 유저 정보 저장
+        UserInfo.shared.imageNumber = randomImageNumber
+        UserInfo.shared.nickname = mainView.nicknameTextField.text
+        
         if isEditMode {
-            UserInfo.shared.imageNumber = randomImageNumber
-            UserInfo.shared.nickname = mainView.nicknameTextField.text
-            dismiss(animated: true)
             delegate?.passUserInfo()
-            print("정보 저장 완료")
-            return
+            dismiss(animated: true)
         } else {
-            UserInfo.shared.imageNumber = randomImageNumber
-            UserInfo.shared.nickname = mainView.nicknameTextField.text
             UserInfo.shared.joinDate = DateFormatter.stringFromDate(Date())
             UserInfo.shared.storedMovies = []
-            
-            // userdefaults isRegistered true로 설정
             UserInfo.shared.isRegistered = true
             
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -167,7 +173,4 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
         }
     }
     
-    @objc func cancelButtonTapped() {
-        dismiss(animated: true)
-    }
 }

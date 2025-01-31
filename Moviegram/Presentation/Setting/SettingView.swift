@@ -8,12 +8,14 @@
 import UIKit
 import SnapKit
 
+// MARK: - 설정 View
 final class SettingView: BaseView {
     
+    // MARK: - Properties
     let profileView = ProfileView()
     let settingTableView = UITableView()
     
-    
+    // MARK: - Configure UI
     override func configureHierarchy() {
         addSubViews(
             profileView,

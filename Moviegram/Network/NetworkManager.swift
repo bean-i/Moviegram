@@ -8,6 +8,7 @@
 import Foundation
 import Alamofire
 
+// MARK: - 네트워크
 final class NetworkManager {
     
     static let shared = NetworkManager()

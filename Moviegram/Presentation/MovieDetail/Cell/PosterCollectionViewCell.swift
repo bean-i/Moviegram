@@ -6,15 +6,19 @@
 //
 
 import UIKit
+
 import Kingfisher
 import SnapKit
 
+// MARK: - 포스터 CollectionViewCell
 final class PosterCollectionViewCell: BaseCollectionViewCell {
     
+    // MARK: - Properties
     static let identifier = "PosterCollectionViewCell"
     
     private let posterImageView = UIImageView()
     
+    // MARK: - Configure UI
     override func configureHierarchy() {
         addSubview(posterImageView)
     }
@@ -29,6 +33,7 @@ final class PosterCollectionViewCell: BaseCollectionViewCell {
         posterImageView.contentMode = .scaleAspectFill
     }
     
+    // MARK: - Configure Data
     func configureData(url: String?) {
         if let url,
            let imageURL = URL(string: TMDBAPI.imageBaseURL + url) {

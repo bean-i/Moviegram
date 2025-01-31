@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+// [영화 상세 화면] - '개봉일, 평점, 장르'를 나타내는 뷰
 final class MovieInfoView: BaseView {
 
     private let imageView = UIImageView()

@@ -6,17 +6,21 @@
 //
 
 import UIKit
+
 import Kingfisher
 import SnapKit
 
+// MARK: - 캐스트 CollectionViewCell
 final class CastCollectionViewCell: BaseCollectionViewCell {
     
+    // MARK: - Properties
     static let identifier = "CastCollectionViewCell"
     
     private let castImageView = UIImageView()
     private let castNameLabel = UILabel()
     private let movieCharacterNameLabel = UILabel()
     
+    // MARK: - Configure UI
     override func configureHierarchy() {
         addSubViews(
             castImageView,
@@ -60,6 +64,7 @@ final class CastCollectionViewCell: BaseCollectionViewCell {
         movieCharacterNameLabel.numberOfLines = 1
     }
     
+    // MARK: - Configure Data
     func configureData(data: Cast) {
         
         if let path = data.profile_path,

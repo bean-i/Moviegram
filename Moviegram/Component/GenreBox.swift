@@ -8,9 +8,11 @@
 import UIKit
 import SnapKit
 
+// [검색 결과 화면] - 장르 정보 UI
 final class GenreBox: BaseView {
     
     private let genreLabel = UILabel()
+    
     var genreTitleId: Int = 0 {
         didSet {
             genreLabel.text = Genre.getGenre(id: genreTitleId)

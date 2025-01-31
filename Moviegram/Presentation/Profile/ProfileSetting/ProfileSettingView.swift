@@ -8,9 +8,11 @@
 import UIKit
 import SnapKit
 
+// MARK: - 프로필 설정 View
 final class ProfileSettingView: BaseView {
     
-    let profileImageView = ProfileImageCustomView()
+    // MARK: - Properties
+    let profileImageView = ProfileImageView()
     
     let cameraView = UIView()
     private let cameraImageView = UIImageView()
@@ -22,6 +24,7 @@ final class ProfileSettingView: BaseView {
     
     let completionButton = UIButton()
     
+    // MARK: - Configure UI
     override func layoutSubviews() {
         super.layoutSubviews()
         cameraView.layer.cornerRadius = cameraView.frame.width / 2

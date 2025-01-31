@@ -8,9 +8,10 @@
 import UIKit
 import SnapKit
 
+// [메인, 세팅 화면] - 유저의 정보(닉네임, 프로필이미지 등)를 나타내는 박스 뷰
 final class ProfileView: BaseView {
     
-    private let profileImageView = ProfileImageCustomView()
+    private let profileImageView = ProfileImageView()
     private let profileNickNameLabel = UILabel()
     private let joinDateLabel = UILabel()
     private let chevronButton = UIImageView()
@@ -84,7 +85,10 @@ final class ProfileView: BaseView {
               let imageNumber = data.imageNumber,
               let joinDate = data.joinDate,
               let storedMovies = data.storedMovies else {
-            print("유저 인포 오류")
+            profileImageView.imageNumber = 0
+            profileNickNameLabel.text = "이름 없음"
+            joinDateLabel.text = "가입 날짜 없음"
+            movieStorageButton.setTitle("0개의 무비박스 보관중", for: .normal)
             return
         }
         

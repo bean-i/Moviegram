@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - 세팅 옵션
 enum SettingOptions: String, CaseIterable {
     case questions = "자주 묻는 질문"
     case contact = "1:1 문의"
@@ -14,41 +15,37 @@ enum SettingOptions: String, CaseIterable {
     case signOut = "탈퇴하기"
 }
 
+// MARK: - 설정 ViewController
 final class SettingViewController: BaseViewController<SettingView> {
 
+    // MARK: - 생명주기
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         mainView.profileView.configureData(data: UserInfo.shared)
     }
     
+    // MARK: - Configure
     override func configureView() {
-        
-        // 프로필뷰 터치 시, 모달 띄우기
-        mainView.profileView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileViewTapped)))
-        
         navigationItem.title = "설정"
-        mainView.profileView.configureData(data: UserInfo.shared)
-        
+    }
+    
+    override func configureDelegate() {
         mainView.settingTableView.delegate = self
         mainView.settingTableView.dataSource = self
         mainView.settingTableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.identifier)
     }
     
-    private func deleteAllUserData() {
-        for key in UserInfoKey.allCases {
-            UserDefaults.standard.removeObject(forKey: key.rawValue)
-        }
-        UserInfo.storedMovieList = [] // 이거 왜 해야되는지..?
+    override func configureGesture() {
+        mainView.profileView.addGestureRecognizer(
+            UITapGestureRecognizer(
+                target: self,
+                action: #selector(profileViewTapped)
+            )
+        )
     }
     
-    private func switchToOnboardingScreen() {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first else { return }
-        
-        window.rootViewController = UINavigationController(rootViewController: OnboardingViewController())
-        window.makeKeyAndVisible()
-    }
-    
+    // MARK: - Methods
+    // 프로필 편집 모달 띄우기
     @objc private func profileViewTapped() {
         let vc = ProfileSettingViewController()
         vc.isEditMode = true
@@ -59,15 +56,27 @@ final class SettingViewController: BaseViewController<SettingView> {
         
         present(nav, animated: true)
     }
-
-}
-
-extension SettingViewController: passUserInfoDelegate {
-    func passUserInfo() {
-        mainView.profileView.configureData(data: UserInfo.shared)
+    
+    // 유저 데이터 모두 삭제
+    private func deleteAllUserData() {
+        UserInfo.storedMovieList = []
+        for key in UserInfoKey.allCases {
+            UserDefaults.standard.removeObject(forKey: key.rawValue)
+        }
     }
+    
+    // 루트뷰 온보딩으로 설정 및 전환
+    private func switchToOnboardingScreen() {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first else { return }
+        
+        window.rootViewController = UINavigationController(rootViewController: OnboardingViewController())
+        window.makeKeyAndVisible()
+    }
+
 }
 
+// MARK: - Extension: TableView
 extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -98,5 +107,12 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
                     self.switchToOnboardingScreen()
                 }
         }
+    }
+}
+
+// MARK: - Extension: Delegate
+extension SettingViewController: passUserInfoDelegate {
+    func passUserInfo() {
+        mainView.profileView.configureData(data: UserInfo.shared)
     }
 }

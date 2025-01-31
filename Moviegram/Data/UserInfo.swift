@@ -7,6 +7,7 @@
 
 import Foundation
 
+// MARK: - UserDefaults의 Key
 enum UserInfoKey: String, CaseIterable {
     case isRegisteredKey = "isRegistered"
     case nicknameKey = "nickname"
@@ -16,15 +17,17 @@ enum UserInfoKey: String, CaseIterable {
     case recentKeywordsKey = "recentKeywords"
 }
 
+// MARK: - UserInfo 싱글톤 패턴
 final class UserInfo {
     
     static let shared = UserInfo()
     
     private init() { }
     
-    // 좋아요 누른 영화 리스트 + UserDefaults에 저장할 배열
+    // 좋아요 누른 영화 리스트: UserDefaults에 저장할 집합 (중복 X)
     static var storedMovieList: Set<Int> = Set(UserInfo.shared.storedMovies ?? [])
     
+    // MARK: - 가입 이력
     var isRegistered: Bool {
         get {
             UserDefaults.standard.bool(forKey: UserInfoKey.isRegisteredKey.rawValue)
@@ -34,6 +37,7 @@ final class UserInfo {
         }
     }
     
+    // MARK: - 닉네임
     var nickname: String? {
         get {
             UserDefaults.standard.string(forKey: UserInfoKey.nicknameKey.rawValue)
@@ -43,6 +47,7 @@ final class UserInfo {
         }
     }
     
+    // MARK: - 프로필 이미지
     var imageNumber: Int? {
         get {
             UserDefaults.standard.integer(forKey: UserInfoKey.imageNumberKey.rawValue)
@@ -52,6 +57,7 @@ final class UserInfo {
         }
     }
     
+    // MARK: - 가입 날짜
     var joinDate: String? {
         get {
             UserDefaults.standard.string(forKey: UserInfoKey.joinDateKey.rawValue)
@@ -61,6 +67,7 @@ final class UserInfo {
         }
     }
     
+    // MARK: - 보관 중인 영화
     var storedMovies: [Int]? {
         get {
             UserDefaults.standard.object(forKey: UserInfoKey.storedMoviesKey.rawValue) as? [Int]
@@ -75,6 +82,7 @@ final class UserInfo {
         }
     }
     
+    // MARK: - 최근 검색어
     var recentKeywords: [String]? {
         get {
             UserDefaults.standard.stringArray(forKey: UserInfoKey.recentKeywordsKey.rawValue) ?? []

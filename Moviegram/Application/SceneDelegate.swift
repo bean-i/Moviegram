@@ -13,8 +13,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        
-        // 초기 화면 설정
+
+        // MARK: - 초기 화면 설정
         guard let scene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: scene)
@@ -22,6 +22,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         var nav = UIViewController()
         
+        // UserInfo의 isRegistered 값이 true -> 메인 화면
+        // UserInfo의 isRegistered 값이 false -> 온보딩 화면
         if UserInfo.shared.isRegistered {
             nav = TabBarController()
         } else {

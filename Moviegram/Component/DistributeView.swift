@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+// [영화 상세 화면] - '개봉일, 평점, 장르' 정보를 구분하는 "|" 표시
 final class DistributeView: BaseView {
 
     private let distributeLabel = UILabel()

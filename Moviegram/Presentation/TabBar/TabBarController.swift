@@ -7,8 +7,10 @@
 
 import UIKit
 
+// MARK: - 탭바
 final class TabBarController: UITabBarController {
 
+    // MARK: - 생명주기
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -16,6 +18,7 @@ final class TabBarController: UITabBarController {
         configureTabBarAppearance()
     }
     
+    // MARK: - Configure
     private func configureTabBarController() {
         let firstVC = MainViewController()
         firstVC.tabBarItem.title = "CINEMA"

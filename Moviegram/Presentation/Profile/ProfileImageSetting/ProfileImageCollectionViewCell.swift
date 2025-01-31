@@ -8,11 +8,13 @@
 import UIKit
 import SnapKit
 
+// MARK: - 프로필 이미지 CollectionViewCell
 final class ProfileImageCollectionViewCell: BaseCollectionViewCell {
     
+    // MARK: - Properties
     static let identifier = "ProfileImageCollectionViewCell"
     
-    private let profileImageView = ProfileImageCustomView()
+    private let profileImageView = ProfileImageView()
     
     var imageNumber: Int = 0 {
         didSet {
@@ -26,6 +28,7 @@ final class ProfileImageCollectionViewCell: BaseCollectionViewCell {
         }
     }
     
+    // MARK: - Configure UI
     override func configureHierarchy() {
         addSubview(profileImageView)
     }

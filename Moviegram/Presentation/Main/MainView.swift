@@ -8,8 +8,10 @@
 import UIKit
 import SnapKit
 
+// MARK: - 메인 View
 final class MainView: BaseView {
     
+    // MARK: - Properties
     let profileView = ProfileView()
     
     private let recentSearchLabel = UILabel()
@@ -21,6 +23,7 @@ final class MainView: BaseView {
     private let todayMovieLabel = UILabel()
     let todayMovieCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
+    // MARK: - Configure UI
     override func configureHierarchy() {
         recentSearchKeywordView.addSubViews(
             noRecentSearchLabel,
@@ -106,6 +109,7 @@ final class MainView: BaseView {
         todayMovieCollectionView.backgroundColor = .black
     }
     
+    // MARK: - CollectionView Layout
     private func todayMovieCollectionViewLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         let spacing: CGFloat = 10

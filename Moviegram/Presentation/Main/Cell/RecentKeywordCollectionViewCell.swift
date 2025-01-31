@@ -8,14 +8,17 @@
 import UIKit
 import SnapKit
 
+// MARK: - 최근 검색 키워드 CollectionViewCell
 final class RecentKeywordCollectionViewCell: BaseCollectionViewCell {
     
+    // MARK: - Properties
     static let identifier = "RecentKeywordCollectionViewCell"
     
     private let keywordView = UIView()
     private let keywordLabel = UILabel()
     private let xButton = UIButton()
     
+    // MARK: - Configure UI
     override func configureHierarchy() {
         keywordView.addSubViews(
             keywordLabel,
@@ -53,6 +56,7 @@ final class RecentKeywordCollectionViewCell: BaseCollectionViewCell {
         xButton.tintColor = .black
     }
     
+    // MARK: - Configure Data
     func configureData(text: String) {
         keywordLabel.text = text
     }

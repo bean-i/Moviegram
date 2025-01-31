@@ -8,8 +8,10 @@
 import UIKit
 import SnapKit
 
+// MARK: - 영화 상세 View
 final class MovieDetailView: BaseView {
 
+    // MARK: - Properties
     private let scrollView = UIScrollView()
     private let contentView = UIView()
     
@@ -31,6 +33,7 @@ final class MovieDetailView: BaseView {
     private let posterLabel = UILabel()
     let posterCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
+    // MARK: - Configure UI
     override func configureHierarchy() {
         
         movieInfoStackView.addArrangedSubviews(
@@ -170,6 +173,7 @@ final class MovieDetailView: BaseView {
         
     }
     
+    // MARK: - Configure Data
     func configureData(data: Movie) {
         let date = data.releaseDate
         let rate = data.averageRating
@@ -190,6 +194,7 @@ final class MovieDetailView: BaseView {
         synopsisDetailLabel.numberOfLines = 3
     }
     
+    // MARK: - CollectionView Layout
     private func backdropCollectionViewLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         let deviceWidth = UIScreen.main.bounds.width
@@ -219,6 +224,7 @@ final class MovieDetailView: BaseView {
         return layout
     }
     
+    // MARK: - Methods
     private func convertSeeMoreButtonLabel(title: String) {
         var titleContainer = AttributeContainer()
         titleContainer.font = .Font.medium.of(weight: .bold)

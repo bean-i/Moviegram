@@ -8,14 +8,17 @@
 import UIKit
 import SnapKit
 
+// MARK: - 프로필 이미지 설정 View
 final class ProfileImageSettingView: BaseView {
 
-    let profileImageView = ProfileImageCustomView()
+    // MARK: - Properties
+    let profileImageView = ProfileImageView()
     private let cameraView = UIView()
     private let cameraImageView = UIImageView()
     
-    let profileImageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: profileImageCollectionViewLayout())
+    let profileImageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
+    // MARK: - Configure UI
     override func layoutSubviews() {
         super.layoutSubviews()
         cameraView.layer.cornerRadius = cameraView.frame.width / 2
@@ -64,10 +67,12 @@ final class ProfileImageSettingView: BaseView {
         cameraImageView.tintColor = .white
         cameraImageView.contentMode = .scaleAspectFit
         
+        profileImageCollectionView.collectionViewLayout = profileImageCollectionViewLayout()
         profileImageCollectionView.backgroundColor = .clear
     }
     
-    static func profileImageCollectionViewLayout() -> UICollectionViewLayout {
+    // MARK: - CollectionView Layout
+    private func profileImageCollectionViewLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         let inset: CGFloat = 30
         let spacing: CGFloat = 10

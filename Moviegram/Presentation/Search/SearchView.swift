@@ -8,12 +8,15 @@
 import UIKit
 import SnapKit
 
+// MARK: - 검색 View
 final class SearchView: BaseView {
 
+    // MARK: - Properties
     let searchBar = UISearchBar()
     let searchResultLabel = UILabel()
     let searchTableView = UITableView()
     
+    // MARK: - Configure UI
     override func configureHierarchy() {
         addSubViews(
             searchBar,

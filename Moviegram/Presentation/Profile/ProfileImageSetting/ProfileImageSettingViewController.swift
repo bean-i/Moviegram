@@ -7,16 +7,20 @@
 
 import UIKit
 
+// MARK: - 프로필 이미지 설정 ViewController
 final class ProfileImageSettingViewController: BaseViewController<ProfileImageSettingView> {
     
+    // MARK: - Properties
     var selectedImageNumber: Int = 0
     var passSelectedImageNumber: ((Int) -> Void)?
     
+    // MARK: - 생명주기
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         passSelectedImageNumber?(self.selectedImageNumber)
     }
     
+    // MARK: - Configure
     override func configureView() {
         
         mainView.profileImageView.imageNumber = selectedImageNumber
@@ -29,6 +33,7 @@ final class ProfileImageSettingViewController: BaseViewController<ProfileImageSe
     
 }
 
+// MARK: - Extension: CollectionView
 extension ProfileImageSettingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 12

@@ -1,5 +1,5 @@
 //
-//  ProfileImageCustomView.swift
+//  ProfileImageView.swift
 //  Moviegram
 //
 //  Created by 이빈 on 1/25/25.
@@ -8,8 +8,8 @@
 import UIKit
 import SnapKit
 
-// 프로필 이미지 커스텀 뷰
-final class ProfileImageCustomView: BaseView {
+// 프로필 이미지를 나타내는 뷰
+final class ProfileImageView: BaseView {
     
     let profileImageView = UIImageView()
     var imageNumber: Int = 0 {

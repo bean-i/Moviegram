@@ -6,11 +6,14 @@
 //
 
 import UIKit
+
 import Kingfisher
 import SnapKit
 
+// MARK: - 오늘의 영화 CollectionViewCell
 final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
     
+    // MARK: - Properties
     static let identifier = "TodayMovieCollectionViewCell"
     
     private let moviePosterImage = UIImageView()
@@ -20,11 +23,13 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
     
     private let movieOverviewLabel = UILabel()
     
+    // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
         movieLikeButton.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
     
+    // MARK: - Configure UI
     override func configureHierarchy() {
         addSubViews(
             moviePosterImage,
@@ -73,6 +78,7 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
         movieOverviewLabel.numberOfLines = 2
     }
     
+    // MARK: - Configure Data
     func configureData(data: Movie) {
 
         if let posterURL = data.posterURL,

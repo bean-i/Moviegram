@@ -24,6 +24,7 @@ extension UIViewController {
         self.present(alert, animated: true)
     }
     
+    // MARK: - 키보드 제스처
     func dismissKeyboardWhenTapped() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false

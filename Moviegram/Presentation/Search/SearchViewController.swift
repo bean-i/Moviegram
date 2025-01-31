@@ -7,35 +7,43 @@
 
 import UIKit
 
+// MARK: - 검색 ViewController
 final class SearchViewController: BaseViewController<SearchView> {
     
+    // MARK: - Properties
     private var searchMovies: [Movie] = []
     
     var currentKeyword = ""
     private var currentPage = 1
     private var totalPage = 1
     
+    // MARK: - 생명주기
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // 좋아요 업데이트
         mainView.searchTableView.reloadData()
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        mainView.searchBar.becomeFirstResponder()
-        
+    // MARK: - Configure
+    override func configureView() {
         title = "영화 검색"
-        
-        self.dismissKeyboardWhenTapped()
+    }
+    
+    override func configureDelegate() {
+        mainView.searchBar.delegate = self
         
         mainView.searchTableView.delegate = self
         mainView.searchTableView.dataSource = self
         mainView.searchTableView.prefetchDataSource = self
         mainView.searchTableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.identifier)
-        mainView.searchBar.delegate = self
     }
     
+    override func configureGesture() {
+        mainView.searchBar.becomeFirstResponder()
+        dismissKeyboardWhenTapped()
+    }
+    
+    // MARK: - Methods
     func getData() {
         NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: currentKeyword, page: String(currentPage)),
                                            type: MovieSearchData.self) { value in
@@ -64,6 +72,7 @@ final class SearchViewController: BaseViewController<SearchView> {
 
 }
 
+// MARK: - Extension: SearchBar
 extension SearchViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -94,6 +103,7 @@ extension SearchViewController: UISearchBarDelegate {
     }
 }
 
+// MARK: - Extension: TableView
 extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -121,22 +131,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     
 }
 
-extension SearchViewController: LikeButtonDelegate {
-    
-    func likeButtonTapped(id: Int, isSelected: Bool) {
-        print(#function, id, isSelected)
-        if isSelected { // true이면 저장
-            UserInfo.shared.storedMovies = [id]
-        } else { // false이면 삭제
-            if let index = UserInfo.storedMovieList.firstIndex(of: id) {
-                UserInfo.storedMovieList.remove(at: index)
-                UserInfo.shared.storedMovies = Array(UserInfo.storedMovieList) // 새로운 집합으로 업데이트
-            }
-        }
-    }
-    
-}
-
+// MARK: - Extension: Prefetch
 extension SearchViewController: UITableViewDataSourcePrefetching {
     
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
@@ -152,5 +147,20 @@ extension SearchViewController: UITableViewDataSourcePrefetching {
             }
         }
     }
+}
+
+// MARK: - Extension: Delegate
+extension SearchViewController: LikeButtonDelegate {
     
+    func likeButtonTapped(id: Int, isSelected: Bool) {
+        print(#function, id, isSelected)
+        if isSelected { // true이면 저장
+            UserInfo.shared.storedMovies = [id]
+        } else { // false이면 삭제
+            if let index = UserInfo.storedMovieList.firstIndex(of: id) {
+                UserInfo.storedMovieList.remove(at: index)
+                UserInfo.shared.storedMovies = Array(UserInfo.storedMovieList) // 새로운 집합으로 업데이트
+            }
+        }
+    }
 }

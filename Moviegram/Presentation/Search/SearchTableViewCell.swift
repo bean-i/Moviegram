@@ -6,11 +6,14 @@
 //
 
 import UIKit
+
 import Kingfisher
 import SnapKit
 
+// MARK: - 검색 TableViewCell
 final class SearchTableViewCell: BaseTableViewCell {
     
+    // MARK: - Properties
     static let identifier = "SearchTableViewCell"
 
     private let movieImageView = UIImageView()
@@ -22,6 +25,7 @@ final class SearchTableViewCell: BaseTableViewCell {
     
     let movieLikeButton = LikeButton()
     
+    // MARK: - Configure UI
     override func configureHierarchy() {
         contentView.addSubViews(
             movieImageView,
@@ -87,6 +91,7 @@ final class SearchTableViewCell: BaseTableViewCell {
         movieReleaseLabel.textColor = .customLightGray
     }
     
+    // MARK: - Configure Data
     func configureData(data: Movie) {
         
         if let posterURL = data.posterURL,

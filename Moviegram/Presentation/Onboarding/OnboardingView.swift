@@ -8,13 +8,16 @@
 import UIKit
 import SnapKit
 
+// MARK: - 온보딩 View
 final class OnboardingView: BaseView {
     
+    // MARK: - Properties
     private let mainImageView = UIImageView()
     private let mainLabel = UILabel()
     private let subLabel = UILabel()
     let startButton = UIButton()
     
+    // MARK: - Configure UI
     override func configureHierarchy() {
         addSubViews(
             mainImageView,

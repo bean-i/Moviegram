@@ -8,11 +8,14 @@
 import UIKit
 import SnapKit
 
+// MARK: - 설정 TableViewCell
 final class SettingTableViewCell: BaseTableViewCell {
 
+    // MARK: - Properties
     static let identifier = "SettingTableViewCell"
     private let settingOptionLabel = UILabel()
     
+    // MARK: - Configure UI
     override func configureHierarchy() {
         addSubview(settingOptionLabel)
     }
@@ -33,6 +36,7 @@ final class SettingTableViewCell: BaseTableViewCell {
         settingOptionLabel.textAlignment = .left
     }
     
+    // MARK: - Configure Data
     func configureData(text: String) {
         settingOptionLabel.text = text
     }

@@ -7,13 +7,17 @@
 
 import UIKit
 
+// MARK: - Protocol
+// Modal 화면에서 데이터 저장 시, 이전 화면의 데이터가 업데이트 되지 않음 -> 딜리게이트 사용하여 이전 뷰에 데이터 전달
 protocol passUserInfoDelegate: AnyObject {
     func passUserInfo()
 }
 
+// MARK: - 메인 ViewController
 final class MainViewController: BaseViewController<MainView> {
     
-    // 오늘의 영화에 들어갈 데이터
+    // MARK: - Properties
+    // 오늘의 영화 데이터
     private var todayMovies: [Movie] = [] {
         didSet {
             mainView.todayMovieCollectionView.reloadData()
@@ -23,13 +27,13 @@ final class MainViewController: BaseViewController<MainView> {
     // 최근 검색 키워드
     private var recentKeywords: [String] = []
     
+    // MARK: - 생명주기
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // 프로필 뷰에 유저 이미지 보여주기
-        mainView.profileView.configureData(data: UserInfo.shared)
-        mainView.todayMovieCollectionView.reloadData()
-        // 최근 검색어 업데이트
-        recentKeywords = UserInfo.shared.recentKeywords?.reversed() ?? []
+        
+        mainView.profileView.configureData(data: UserInfo.shared) // 프로필뷰 업데이트
+        mainView.todayMovieCollectionView.reloadData() // 오늘의 영화 컬렉션뷰 업데이트
+        recentKeywords = UserInfo.shared.recentKeywords?.reversed() ?? [] // 최근 검색어 업데이트
         mainView.recentKeywordCollectionView.reloadData()
         
         // 최근 검색어 있으면, 컬렉션뷰 보여주고, 없으면 레이블 보여주기
@@ -44,24 +48,10 @@ final class MainViewController: BaseViewController<MainView> {
                                            type: TodayMovieData.self) { value in
             self.todayMovies = value.results
         }
-        
-        // delegate 설정
-        // 1) 오늘의 영화
-        mainView.todayMovieCollectionView.delegate = self
-        mainView.todayMovieCollectionView.dataSource = self
-        mainView.todayMovieCollectionView.register(TodayMovieCollectionViewCell.self, forCellWithReuseIdentifier: TodayMovieCollectionViewCell.identifier)
+    }
     
-        // 2) 최근 검색어
-        mainView.recentKeywordCollectionView.delegate = self
-        mainView.recentKeywordCollectionView.dataSource = self
-        mainView.recentKeywordCollectionView.register(RecentKeywordCollectionViewCell.self, forCellWithReuseIdentifier: RecentKeywordCollectionViewCell.identifier)
-        
-        // 프로필뷰 터치 시, 모달 띄우기
-        mainView.profileView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileViewTapped)))
-        
-        // 전체삭제 버튼 터치 시, 최근 검색어 내역 리셋
-        mainView.deleteAllSearchKeywordButton.addTarget(self, action: #selector(deleteAllSearchKeywordButtonTapped), for: .touchUpInside)
-        
+    // MARK: - Configure
+    override func configureView() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "magnifyingglass"),
             style: .plain,
@@ -71,6 +61,28 @@ final class MainViewController: BaseViewController<MainView> {
         navigationItem.title = "Moviegram"
     }
     
+    override func configureDelegate() {
+        // 1) 오늘의 영화
+        mainView.todayMovieCollectionView.delegate = self
+        mainView.todayMovieCollectionView.dataSource = self
+        mainView.todayMovieCollectionView.register(TodayMovieCollectionViewCell.self, forCellWithReuseIdentifier: TodayMovieCollectionViewCell.identifier)
+    
+        // 2) 최근 검색어
+        mainView.recentKeywordCollectionView.delegate = self
+        mainView.recentKeywordCollectionView.dataSource = self
+        mainView.recentKeywordCollectionView.register(RecentKeywordCollectionViewCell.self, forCellWithReuseIdentifier: RecentKeywordCollectionViewCell.identifier)
+    }
+    
+    override func configureGesture() {
+        // 프로필뷰 터치 시, 모달 띄우기
+        mainView.profileView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileViewTapped)))
+        
+        // 전체삭제 버튼 터치 시, 최근 검색어 내역 리셋
+        mainView.deleteAllSearchKeywordButton.addTarget(self, action: #selector(deleteAllSearchKeywordButtonTapped), for: .touchUpInside)
+    }
+    
+    // MARK: - Methods
+    // 최근 검색어 개수에 따라, 컬렉션뷰 or 레이블 보여주기
     private func updateRecentKeywordView() {
         if recentKeywords.count > 0 {
             mainView.recentKeywordCollectionView.isHidden = false
@@ -81,20 +93,21 @@ final class MainViewController: BaseViewController<MainView> {
         }
     }
     
+    // "전체 삭제" 버튼 터치 시, userdefaults에 저장 된 정보 삭제
     @objc private func deleteAllSearchKeywordButtonTapped() {
-        // userdefaults에 저장 된 정보 삭제
         UserDefaults.standard.removeObject(forKey: UserInfoKey.recentKeywordsKey.rawValue)
         recentKeywords = []
-        // ui 업데이트
+        // UI 업데이트
         updateRecentKeywordView()
     }
     
+    // 네비게이션아이템의 검색 버튼 터치 시, 검색 화면으로 전환
     @objc private func searchButtonTapped() {
-        // 검색 화면 전환
         let vc = SearchViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
     
+    // 프로필뷰 터치 시, 프로필설정화면 sheet present
     @objc private func profileViewTapped() {
         let vc = ProfileSettingViewController()
         vc.isEditMode = true
@@ -108,12 +121,7 @@ final class MainViewController: BaseViewController<MainView> {
 
 }
 
-extension MainViewController: passUserInfoDelegate {
-    func passUserInfo() {
-        mainView.profileView.configureData(data: UserInfo.shared)
-    }
-}
-
+// MARK: - Extension: CollectionView
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -151,6 +159,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
     }
     
+    // 최근 검색 키워드 컬렉션뷰셀의 경우, 글자 크기를 기반으로 width 지정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         switch collectionView{
@@ -195,10 +204,18 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
 }
 
+// MARK: - Extension: Delegate
+// 유저 정보 전달 delegate 채택
+extension MainViewController: passUserInfoDelegate {
+    func passUserInfo() {
+        mainView.profileView.configureData(data: UserInfo.shared)
+    }
+}
+
+// 좋아요 버튼 delegate 채택
 extension MainViewController: LikeButtonDelegate {
     
     func likeButtonTapped(id: Int, isSelected: Bool) {
-        print(#function, id, isSelected)
         if isSelected { // true이면 저장
             UserInfo.shared.storedMovies = [id]
         } else { // false이면 삭제
@@ -207,8 +224,7 @@ extension MainViewController: LikeButtonDelegate {
                 UserInfo.shared.storedMovies = Array(UserInfo.storedMovieList) // 새로운 집합으로 업데이트
             }
         }
-        // 버튼 업데이트 시, 프로필 뷰 업데이트!
+        // 버튼 터치 시, 프로필 뷰 업데이트
         mainView.profileView.configureData(data: UserInfo.shared)
     }
-    
 }

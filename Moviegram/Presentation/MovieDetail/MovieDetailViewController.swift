@@ -7,16 +7,25 @@
 
 import UIKit
 
+// MARK: - 영화 상세 ViewController
 final class MovieDetailViewController: BaseViewController<MovieDetailView> {
 
+    // MARK: - Properties
     var movieInfo: Movie?
 
     private let likeButton = LikeButton()
     
-    private var backdropImages: [ImagePath] = []
-    private var castInfos: [Cast] = []
-    private var posterImages: [ImagePath] = []
+    private var backdropImages: [ImagePath] = [] {
+        didSet { mainView.backdropCollectionView.reloadData() }
+    }
+    private var castInfos: [Cast] = [] {
+        didSet { mainView.castCollectionView.reloadData() }
+    }
+    private var posterImages: [ImagePath] = [] {
+        didSet { mainView.posterCollectionView.reloadData() }
+    }
     
+    // MARK: - 생명주기
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let id = likeButton.id {
@@ -28,42 +37,46 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
         }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    // MARK: - Configure
+    override func configureView() {
         
         guard let movieInfo else {
-            print("잘못된 접근")
+            showAlert(
+                title: "잘못된 접근",
+                message: "잘못된 접근입니다. 다시 접근해 주세요.",
+                cancel: false) {
+                    self.navigationController?.popViewController(animated: true)
+                }
             return
         }
+        
+        title = movieInfo.title
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: likeButton)
         
         // 네비게이션바 좋아요 버튼
         likeButton.id = movieInfo.id
         likeButton.delegate = self
         
-        // 타이틀, 하트
-        title = movieInfo.title
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: likeButton)
+        // 영화 상세 정보 나타내기
+        mainView.configureData(data: movieInfo)
         
         // 백드롭 + 포스터 이미지 네트워크
         NetworkManager.shared.getMovieData(api: .MovieImage(id: movieInfo.id), type: MovieImageData.self) { value in
             // 백드롭 이미지 5개까지만 넣기
             self.backdropImages = Array(value.backdrops.prefix(5))
-            self.mainView.backdropCollectionView.reloadData()
             // pagecontrol 개수 지정
             self.mainView.pageControl.numberOfPages = self.backdropImages.count
-            
             // 포스터 이미지
             self.posterImages = value.posters
-            self.mainView.posterCollectionView.reloadData()
         }
         
         // 캐스트 네트워크
         NetworkManager.shared.getMovieData(api: .Cast(id: movieInfo.id), type: CreditData.self) { value in
             self.castInfos = value.cast
-            self.mainView.castCollectionView.reloadData()
         }
-        
-        // 컬렉션뷰 딜리게이트
+    }
+    
+    override func configureDelegate() {
         // 1) 백드롭 컬렉션뷰
         mainView.backdropCollectionView.delegate = self
         mainView.backdropCollectionView.dataSource = self
@@ -78,16 +91,13 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
         mainView.posterCollectionView.delegate = self
         mainView.posterCollectionView.dataSource = self
         mainView.posterCollectionView.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: PosterCollectionViewCell.identifier)
-        
-        // 영화 상세 정보 나타내기
-        mainView.configureData(data: movieInfo)
     }
 
 }
 
+// MARK: - Extension: CollectionView
 extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    // 한 화면에 3개의 컬렉션뷰
-    // 컬렉션뷰마다 분기처리 해주기
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch collectionView {
         case mainView.backdropCollectionView:
@@ -137,6 +147,7 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
     
 }
 
+// MARK: - Extension: Delegate
 extension MovieDetailViewController: LikeButtonDelegate {
     
     func likeButtonTapped(id: Int, isSelected: Bool) {
