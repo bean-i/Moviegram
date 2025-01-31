@@ -11,7 +11,7 @@ import UIKit
 final class MovieDetailViewController: BaseViewController<MovieDetailView> {
 
     // MARK: - Properties
-    var movieInfo: Movie?
+    var movieInfo: MovieModel?
 
     private let likeButton = LikeButton()
     
@@ -61,7 +61,7 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
         mainView.configureData(data: movieInfo)
         
         // 백드롭 + 포스터 이미지 네트워크
-        NetworkManager.shared.getMovieData(api: .MovieImage(id: movieInfo.id), type: MovieImageData.self) { value in
+        NetworkManager.shared.getMovieData(api: .MovieImage(id: movieInfo.id), type: MovieImageModel.self) { value in
             // 백드롭 이미지 5개까지만 넣기
             self.backdropImages = Array(value.backdrops.prefix(5))
             // pagecontrol 개수 지정
@@ -71,7 +71,7 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
         }
         
         // 캐스트 네트워크
-        NetworkManager.shared.getMovieData(api: .Cast(id: movieInfo.id), type: CreditData.self) { value in
+        NetworkManager.shared.getMovieData(api: .Cast(id: movieInfo.id), type: CreditModel.self) { value in
             self.castInfos = value.cast
         }
     }

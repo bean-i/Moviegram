@@ -11,7 +11,7 @@ import UIKit
 final class SearchViewController: BaseViewController<SearchView> {
     
     // MARK: - Properties
-    private var searchMovies: [Movie] = []
+    private var searchMovies: [MovieModel] = []
     
     var currentKeyword = ""
     private var currentPage = 1
@@ -46,7 +46,7 @@ final class SearchViewController: BaseViewController<SearchView> {
     // MARK: - Methods
     func getData() {
         NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: currentKeyword, page: String(currentPage)),
-                                           type: MovieSearchData.self) { value in
+                                           type: MovieSearchModel.self) { value in
             // 검색 결과가 없으면
             if value.totalResults == 0 {
                 self.mainView.searchResultLabel.isHidden = false
@@ -140,7 +140,7 @@ extension SearchViewController: UITableViewDataSourcePrefetching {
                currentPage < totalPage {
                 currentPage += 1
                 
-                NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: currentKeyword, page: String(currentPage)), type: MovieSearchData.self) { value in
+                NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: currentKeyword, page: String(currentPage)), type: MovieSearchModel.self) { value in
                     self.searchMovies.append(contentsOf: value.results)
                     self.mainView.searchTableView.reloadData()
                 }

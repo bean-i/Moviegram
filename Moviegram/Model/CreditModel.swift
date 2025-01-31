@@ -1,5 +1,5 @@
 //
-//  CreditData.swift
+//  CreditModel.swift
 //  Moviegram
 //
 //  Created by 이빈 on 1/30/25.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CreditData: Decodable {
+struct CreditModel: Decodable {
     let id: Int
     let cast: [Cast]
 }

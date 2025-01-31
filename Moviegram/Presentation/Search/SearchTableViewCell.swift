@@ -92,7 +92,7 @@ final class SearchTableViewCell: BaseTableViewCell {
     }
     
     // MARK: - Configure Data
-    func configureData(data: Movie) {
+    func configureData(data: MovieModel) {
         
         if let posterURL = data.posterURL,
            let url = URL(string: TMDBAPI.imageBaseURL + posterURL) {

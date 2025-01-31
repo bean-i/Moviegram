@@ -174,7 +174,7 @@ final class MovieDetailView: BaseView {
     }
     
     // MARK: - Configure Data
-    func configureData(data: Movie) {
+    func configureData(data: MovieModel) {
         let date = data.releaseDate
         let rate = data.averageRating
         let genreID = data.genreID.prefix(2)

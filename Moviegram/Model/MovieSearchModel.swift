@@ -1,5 +1,5 @@
 //
-//  MovieSearchData.swift
+//  MovieSearchModel.swift
 //  Moviegram
 //
 //  Created by 이빈 on 1/28/25.
@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct MovieSearchData: Decodable {
+struct MovieSearchModel: Decodable {
     let page: Int
-    let results: [Movie]
+    let results: [MovieModel]
     let totalPages: Int
     let totalResults: Int
     

@@ -1,5 +1,5 @@
 //
-//  MovieData.swift
+//  MovieModel.swift
 //  Moviegram
 //
 //  Created by 이빈 on 1/28/25.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Movie: Decodable {
+struct MovieModel: Decodable {
     let id: Int
     let backdropURL: String?
     let title: String

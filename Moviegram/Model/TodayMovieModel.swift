@@ -1,5 +1,5 @@
 //
-//  TodayMovieData.swift
+//  TodayMovieModel.swift
 //  Moviegram
 //
 //  Created by 이빈 on 1/27/25.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TodayMovieData: Decodable {
+struct TodayMovieModel: Decodable {
     let page: Int
-    let results: [Movie]
+    let results: [MovieModel]
 }

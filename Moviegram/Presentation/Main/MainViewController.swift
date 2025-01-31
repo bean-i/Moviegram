@@ -7,18 +7,12 @@
 
 import UIKit
 
-// MARK: - Protocol
-// Modal 화면에서 데이터 저장 시, 이전 화면의 데이터가 업데이트 되지 않음 -> 딜리게이트 사용하여 이전 뷰에 데이터 전달
-protocol passUserInfoDelegate: AnyObject {
-    func passUserInfo()
-}
-
 // MARK: - 메인 ViewController
 final class MainViewController: BaseViewController<MainView> {
     
     // MARK: - Properties
     // 오늘의 영화 데이터
-    private var todayMovies: [Movie] = [] {
+    private var todayMovies: [MovieModel] = [] {
         didSet {
             mainView.todayMovieCollectionView.reloadData()
         }
@@ -45,7 +39,7 @@ final class MainViewController: BaseViewController<MainView> {
         
         // 오늘의 영화 데이터 불러오기
         NetworkManager.shared.getMovieData(api: .TodayMovie,
-                                           type: TodayMovieData.self) { value in
+                                           type: TodayMovieModel.self) { value in
             self.todayMovies = value.results
         }
     }
