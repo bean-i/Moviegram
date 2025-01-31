@@ -146,20 +146,3 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
     }
     
 }
-
-// MARK: - Extension: Delegate
-extension MovieDetailViewController: LikeButtonDelegate {
-    
-    func likeButtonTapped(id: Int, isSelected: Bool) {
-        print(#function, id, isSelected)
-        if isSelected { // true이면 저장
-            UserInfo.shared.storedMovies = [id]
-        } else { // false이면 삭제
-            if let index = UserInfo.storedMovieList.firstIndex(of: id) {
-                UserInfo.storedMovieList.remove(at: index)
-                UserInfo.shared.storedMovies = Array(UserInfo.storedMovieList) // 새로운 집합으로 업데이트
-            }
-        }
-    }
-
-}

@@ -43,3 +43,21 @@ class BaseViewController<T: UIView>: UIViewController {
     func configureGesture() { }
     
 }
+
+extension BaseViewController: LikeButtonDelegate {
+    
+    func likeButtonTapped(id: Int, isSelected: Bool) {
+        if isSelected { // true이면 저장
+            UserInfo.shared.storedMovies = [id]
+        } else { // false이면 삭제
+            if let index = UserInfo.storedMovieList.firstIndex(of: id) {
+                UserInfo.storedMovieList.remove(at: index)
+                UserInfo.shared.storedMovies = Array(UserInfo.storedMovieList) // 새로운 집합으로 업데이트
+            }
+        }
+        // 메인 뷰인 경우에: 버튼 터치 시, 프로필 뷰 업데이트 (실시간 반영)
+        if let currentView = mainView as? MainView {
+            currentView.profileView.configureData(data: UserInfo.shared)
+        }
+    }
+}

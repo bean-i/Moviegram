@@ -211,20 +211,3 @@ extension MainViewController: passUserInfoDelegate {
         mainView.profileView.configureData(data: UserInfo.shared)
     }
 }
-
-// 좋아요 버튼 delegate 채택
-extension MainViewController: LikeButtonDelegate {
-    
-    func likeButtonTapped(id: Int, isSelected: Bool) {
-        if isSelected { // true이면 저장
-            UserInfo.shared.storedMovies = [id]
-        } else { // false이면 삭제
-            if let index = UserInfo.storedMovieList.firstIndex(of: id) {
-                UserInfo.storedMovieList.remove(at: index)
-                UserInfo.shared.storedMovies = Array(UserInfo.storedMovieList) // 새로운 집합으로 업데이트
-            }
-        }
-        // 버튼 터치 시, 프로필 뷰 업데이트
-        mainView.profileView.configureData(data: UserInfo.shared)
-    }
-}
