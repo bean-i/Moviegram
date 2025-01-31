@@ -48,9 +48,18 @@ final class SearchViewController: BaseViewController<SearchView> {
                 self.totalPage = value.totalPages
                 self.searchMovies = value.results
                 self.mainView.searchTableView.reloadData()
+                
+                if self.currentPage == 1 {
+                    self.mainView.searchTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+                }
             }
             
         }
+    }
+    
+    func initData() {
+        currentPage = 1
+        totalPage = 1
     }
 
 }
@@ -63,13 +72,25 @@ extension SearchViewController: UISearchBarDelegate {
             print("검색 오류")
             return
         }
+        // 검색 후, 키보드 내리기
+        mainView.searchBar.resignFirstResponder()
         
-        // userdefaults의 최근 검색어에 저장
-        UserInfo.shared.recentKeywords = [text]
+        initData()
         
-        currentKeyword = text
-        // 네트워크 통신
-        getData()
+        // 바로 전과 같은 검색어를 입력했으면, 네트워크 통신X
+        if text == currentKeyword {
+            // 스크롤 상단으로 올려주기
+            mainView.searchTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+        } else {
+            // userdefaults의 최근 검색어에 저장
+            UserInfo.shared.recentKeywords = [text]
+            
+            currentKeyword = text
+            // 네트워크 통신
+            getData()
+        }
+        
+        
     }
 }
 
