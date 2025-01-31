@@ -57,6 +57,8 @@ final class SearchView: BaseView {
         searchTableView.separatorInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         searchTableView.isHidden = true
         searchTableView.keyboardDismissMode = .onDrag
+        searchTableView.showsVerticalScrollIndicator = true
+        searchTableView.indicatorStyle = .white
     }
     
 }

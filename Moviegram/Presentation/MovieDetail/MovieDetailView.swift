@@ -125,6 +125,8 @@ final class MovieDetailView: BaseView {
     }
     
     override func configureView() {
+        scrollView.showsVerticalScrollIndicator = false
+        
         backdropCollectionView.collectionViewLayout = backdropCollectionViewLayout()
         backdropCollectionView.isPagingEnabled = true
         backdropCollectionView.backgroundColor = .black
