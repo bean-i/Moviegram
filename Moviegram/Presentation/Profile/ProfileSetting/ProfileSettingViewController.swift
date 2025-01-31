@@ -59,6 +59,7 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.dismissKeyboardWhenTapped()
         title = isEditMode ? "프로필 편집" : "프로필 설정"
     }
     
