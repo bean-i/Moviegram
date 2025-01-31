@@ -147,13 +147,7 @@ final class MovieDetailView: BaseView {
         synopsisDetailLabel.font = .Font.medium.of(weight: .medium)
         synopsisDetailLabel.lineBreakStrategy = .hangulWordPriority
         
-        var config = UIButton.Configuration.plain()
-        var titleContainer = AttributeContainer()
-        titleContainer.font = .Font.medium.of(weight: .bold)
-        config.attributedTitle = AttributedString("More", attributes: titleContainer)
-        config.baseForegroundColor = .point
-        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
-        seeMoreButton.configuration = config
+        seeMoreButton.configuration = UIButton.Configuration.customStyle(title: "More")
         seeMoreButton.addTarget(self, action: #selector(seeMoreButtonTapped), for: .touchUpInside)
         
         castLabel.text = "Cast"

@@ -27,13 +27,9 @@ final class LikeButton: UIButton {
     }
     
     func configureButton() {
-        var config = UIButton.Configuration.plain()
-        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
-        config.baseBackgroundColor = .clear
-        self.configuration = config
+        self.configuration = UIButton.Configuration.customStyle(title: nil)
         self.setImage(UIImage(systemName: "heart"), for: .normal)
         self.setImage(UIImage(systemName: "heart.fill"), for: .selected)
-        self.tintColor = .point
     }
     
     @objc func buttonTapped() {

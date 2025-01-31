@@ -105,13 +105,7 @@ final class MainView: BaseView {
         recentSearchLabel.textColor = .white
         recentSearchLabel.font = .Font.large.of(weight: .heavy)
         
-        var config = UIButton.Configuration.plain()
-        var titleContainer = AttributeContainer()
-        titleContainer.font = .Font.medium.of(weight: .bold)
-        config.attributedTitle = AttributedString("전체 삭제", attributes: titleContainer)
-        config.baseForegroundColor = .point
-        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
-        deleteAllSearchKeywordButton.configuration = config
+        deleteAllSearchKeywordButton.configuration = UIButton.Configuration.customStyle(title: "전체 삭제")
         
         noRecentSearchLabel.isHidden = true
         noRecentSearchLabel.text = "최근 검색어 내역이 없습니다."
