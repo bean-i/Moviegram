@@ -46,6 +46,7 @@ final class ProfileImageCustomView: BaseView {
     
     override func configureView() {
         profileImageView.isUserInteractionEnabled = true
+        profileImageView.backgroundColor = .clear
         profileImageView.contentMode = .scaleAspectFill
         profileImageView.image = UIImage(named: "profile_\(String(imageNumber))")
         profileImageView.clipsToBounds = true
