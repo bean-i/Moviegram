@@ -47,10 +47,13 @@ final class SearchViewController: BaseViewController<SearchView> {
     func getData() {
         NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: currentKeyword, page: String(currentPage)),
                                            type: MovieSearchModel.self) { value in
-            // 검색 결과가 없으면
+            print(value.totalResults)
+            // 검색 결과가 없으면 테이블뷰 X, 레이블 O
             if value.totalResults == 0 {
                 self.mainView.searchResultLabel.isHidden = false
-            } else {// 검색 결과가 있으면 테이블뷰 보여줭~
+                self.mainView.searchTableView.isHidden = true
+            } else {// 검색 결과가 있으면 테이블뷰 O, 레이블 X
+                self.mainView.searchResultLabel.isHidden = true
                 self.mainView.searchTableView.isHidden = false
                 self.currentPage = value.page
                 self.totalPage = value.totalPages
@@ -143,7 +146,7 @@ extension SearchViewController: UITableViewDataSourcePrefetching {
                 NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: currentKeyword, page: String(currentPage)), type: MovieSearchModel.self) { value in
                     self.searchMovies.append(contentsOf: value.results)
                     self.mainView.searchTableView.reloadData()
-                }
+                } // 실패하면 currentPage -= 1
             }
         }
     }
