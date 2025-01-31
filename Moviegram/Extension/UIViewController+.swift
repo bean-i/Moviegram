@@ -24,6 +24,16 @@ extension UIViewController {
         self.present(alert, animated: true)
     }
     
+    func dismissKeyboardWhenTapped() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
     // MARK: - 화면 전환 로직
 //    enum TransitionStyle {
 //        case presentNavigation // 네비게이션이 임베드 된 present
