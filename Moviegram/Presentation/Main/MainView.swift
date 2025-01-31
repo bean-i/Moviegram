@@ -12,32 +12,14 @@ final class MainView: BaseView {
     
     let profileView = ProfileView()
     
-    let recentSearchLabel = UILabel()
+    private let recentSearchLabel = UILabel()
     let deleteAllSearchKeywordButton = UIButton()
-    let recentSearchKeywordView = UIView()
+    private let recentSearchKeywordView = UIView()
     let noRecentSearchLabel = UILabel()
     let recentKeywordCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
-    let todayMovieLabel = UILabel()
+    private let todayMovieLabel = UILabel()
     let todayMovieCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
-
-    func todayMovieCollectionViewLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
-        let spacing: CGFloat = 10
-        layout.scrollDirection = .horizontal
-        layout.sectionInset = UIEdgeInsets(top: 0, left: spacing, bottom: 0, right: spacing)
-        layout.minimumInteritemSpacing = spacing
-        layout.itemSize = CGSize(width: 210, height: 380)
-        return layout
-    }
-    
-    func recentKeywordCollectionViewLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 10
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-        return layout
-    }
     
     override func configureHierarchy() {
         recentSearchKeywordView.addSubViews(
@@ -122,6 +104,24 @@ final class MainView: BaseView {
         todayMovieCollectionView.collectionViewLayout = todayMovieCollectionViewLayout()
         todayMovieCollectionView.showsHorizontalScrollIndicator = false
         todayMovieCollectionView.backgroundColor = .black
+    }
+    
+    private func todayMovieCollectionViewLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        let spacing: CGFloat = 10
+        layout.scrollDirection = .horizontal
+        layout.sectionInset = UIEdgeInsets(top: 0, left: spacing, bottom: 0, right: spacing)
+        layout.minimumInteritemSpacing = spacing
+        layout.itemSize = CGSize(width: 210, height: 380)
+        return layout
+    }
+    
+    private func recentKeywordCollectionViewLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        return layout
     }
     
 }

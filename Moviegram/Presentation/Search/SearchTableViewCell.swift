@@ -13,12 +13,12 @@ final class SearchTableViewCell: BaseTableViewCell {
     
     static let identifier = "SearchTableViewCell"
 
-    let movieImageView = UIImageView()
-    let movieTitleLabel = UILabel()
-    let movieReleaseLabel = UILabel()
+    private let movieImageView = UIImageView()
+    private let movieTitleLabel = UILabel()
+    private let movieReleaseLabel = UILabel()
     
-    let genreBox1 = GenreBox()
-    let genreBox2 = GenreBox()
+    private let genreBox1 = GenreBox()
+    private let genreBox2 = GenreBox()
     
     let movieLikeButton = LikeButton()
     

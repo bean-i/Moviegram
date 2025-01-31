@@ -13,10 +13,10 @@ final class ProfileSettingView: BaseView {
     let profileImageView = ProfileImageCustomView()
     
     let cameraView = UIView()
-    let cameraImageView = UIImageView()
+    private let cameraImageView = UIImageView()
     
     let nicknameTextField = UITextField()
-    let nicknameTextFieldUnderLine = UIView()
+    private let nicknameTextFieldUnderLine = UIView()
     
     let nicknameConditionStatusLabel = UILabel()
     

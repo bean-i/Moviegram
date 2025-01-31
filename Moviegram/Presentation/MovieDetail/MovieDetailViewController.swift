@@ -11,11 +11,11 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
 
     var movieInfo: Movie?
 
-    let likeButton = LikeButton()
+    private let likeButton = LikeButton()
     
-    var backdropImages: [ImagePath] = []
-    var castInfos: [Cast] = []
-    var posterImages: [ImagePath] = []
+    private var backdropImages: [ImagePath] = []
+    private var castInfos: [Cast] = []
+    private var posterImages: [ImagePath] = []
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

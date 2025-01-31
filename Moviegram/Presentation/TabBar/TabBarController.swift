@@ -16,7 +16,7 @@ final class TabBarController: UITabBarController {
         configureTabBarAppearance()
     }
     
-    func configureTabBarController() {
+    private func configureTabBarController() {
         let firstVC = MainViewController()
         firstVC.tabBarItem.title = "CINEMA"
         firstVC.tabBarItem.image = UIImage(systemName: "popcorn")
@@ -35,7 +35,7 @@ final class TabBarController: UITabBarController {
         setViewControllers([firstNav, secondNav, thirdNav], animated: true)
     }
 
-    func configureTabBarAppearance() {
+    private func configureTabBarAppearance() {
         let appearance = UITabBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundColor = .black

@@ -10,7 +10,7 @@ import SnapKit
 
 final class GenreBox: BaseView {
     
-    let genreLabel = UILabel()
+    private let genreLabel = UILabel()
     var genreTitleId: Int = 0 {
         didSet {
             genreLabel.text = Genre.getGenre(id: genreTitleId)

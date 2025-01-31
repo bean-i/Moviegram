@@ -10,25 +10,25 @@ import SnapKit
 
 final class MovieDetailView: BaseView {
 
-    let scrollView = UIScrollView()
-    let contentView = UIView()
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
     
     let backdropCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     let pageControl = UIPageControl()
     
-    let movieInfoStackView = UIStackView()
-    let releaseView = MovieInfoView()
-    let rateView = MovieInfoView()
-    let genreView = MovieInfoView()
+    private let movieInfoStackView = UIStackView()
+    private let releaseView = MovieInfoView()
+    private let rateView = MovieInfoView()
+    private let genreView = MovieInfoView()
     
-    let synopsisLabel = UILabel()
-    let seeMoreButton = UIButton()
-    let synopsisDetailLabel = UILabel()
+    private let synopsisLabel = UILabel()
+    private let seeMoreButton = UIButton()
+    private let synopsisDetailLabel = UILabel()
     
-    let castLabel = UILabel()
+    private let castLabel = UILabel()
     let castCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
-    let posterLabel = UILabel()
+    private let posterLabel = UILabel()
     let posterCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
     override func configureHierarchy() {
@@ -188,7 +188,7 @@ final class MovieDetailView: BaseView {
         synopsisDetailLabel.numberOfLines = 3
     }
     
-    func backdropCollectionViewLayout() -> UICollectionViewLayout {
+    private func backdropCollectionViewLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         let deviceWidth = UIScreen.main.bounds.width
         layout.scrollDirection = .horizontal
@@ -198,7 +198,7 @@ final class MovieDetailView: BaseView {
         return layout
     }
     
-    func castCollectionViewLayout() -> UICollectionViewLayout {
+    private func castCollectionViewLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 20
@@ -208,7 +208,7 @@ final class MovieDetailView: BaseView {
         return layout
     }
     
-    func posterCollectionViewLayout() -> UICollectionViewLayout{
+    private func posterCollectionViewLayout() -> UICollectionViewLayout{
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 10
@@ -217,13 +217,13 @@ final class MovieDetailView: BaseView {
         return layout
     }
     
-    func convertSeeMoreButtonLabel(title: String) {
+    private func convertSeeMoreButtonLabel(title: String) {
         var titleContainer = AttributeContainer()
         titleContainer.font = .Font.medium.of(weight: .bold)
         seeMoreButton.configuration?.attributedTitle = AttributedString(title, attributes: titleContainer)
     }
     
-    @objc func seeMoreButtonTapped() {
+    @objc private func seeMoreButtonTapped() {
         if synopsisDetailLabel.numberOfLines == 0 {
             convertSeeMoreButtonLabel(title: "More")
             synopsisDetailLabel.numberOfLines = 3

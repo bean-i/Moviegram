@@ -26,7 +26,7 @@ final class LikeButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureButton() {
+    private func configureButton() {
         self.configuration = UIButton.Configuration.customStyle(title: nil)
         self.setImage(UIImage(systemName: "heart"), for: .normal)
         self.setImage(UIImage(systemName: "heart.fill"), for: .selected)

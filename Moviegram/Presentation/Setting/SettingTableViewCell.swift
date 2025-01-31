@@ -11,7 +11,7 @@ import SnapKit
 final class SettingTableViewCell: BaseTableViewCell {
 
     static let identifier = "SettingTableViewCell"
-    let settingOptionLabel = UILabel()
+    private let settingOptionLabel = UILabel()
     
     override func configureHierarchy() {
         addSubview(settingOptionLabel)
@@ -31,6 +31,10 @@ final class SettingTableViewCell: BaseTableViewCell {
         settingOptionLabel.font = .Font.medium.of(weight: .medium)
         settingOptionLabel.textColor = .white
         settingOptionLabel.textAlignment = .left
+    }
+    
+    func configureData(text: String) {
+        settingOptionLabel.text = text
     }
     
 }

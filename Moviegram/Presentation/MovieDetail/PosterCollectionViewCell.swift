@@ -13,7 +13,7 @@ final class PosterCollectionViewCell: BaseCollectionViewCell {
     
     static let identifier = "PosterCollectionViewCell"
     
-    let posterImageView = UIImageView()
+    private let posterImageView = UIImageView()
     
     override func configureHierarchy() {
         addSubview(posterImageView)

@@ -29,8 +29,8 @@ enum ConditionStatus {
 
 final class ProfileSettingViewController: BaseViewController<ProfileSettingView> {
     
-    var randomImageNumber = Int.random(in: 0...11)
-    let forbiddenStrings: [Character] = ["@", "#", "$", "%"]
+    private var randomImageNumber = Int.random(in: 0...11)
+    private let forbiddenStrings: [Character] = ["@", "#", "$", "%"]
     var isEditMode = false {
         didSet {
             if isEditMode {
@@ -40,7 +40,7 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     }
     weak var delegate: passUserInfoDelegate?
     
-    func editModeNavigationBar() {
+    private func editModeNavigationBar() {
         title =  "프로필 편집"
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "xmark"),

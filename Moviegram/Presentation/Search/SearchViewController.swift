@@ -9,11 +9,11 @@ import UIKit
 
 final class SearchViewController: BaseViewController<SearchView> {
     
-    var searchMovies: [Movie] = []
+    private var searchMovies: [Movie] = []
     
     var currentKeyword = ""
-    var currentPage = 1
-    var totalPage = 1
+    private var currentPage = 1
+    private var totalPage = 1
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -57,7 +57,7 @@ final class SearchViewController: BaseViewController<SearchView> {
         }
     }
     
-    func initData() {
+    private func initData() {
         currentPage = 1
         totalPage = 1
     }

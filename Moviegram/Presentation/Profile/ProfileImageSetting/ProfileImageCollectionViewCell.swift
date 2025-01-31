@@ -12,7 +12,7 @@ final class ProfileImageCollectionViewCell: BaseCollectionViewCell {
     
     static let identifier = "ProfileImageCollectionViewCell"
     
-    let profileImageView = ProfileImageCustomView()
+    private let profileImageView = ProfileImageCustomView()
     
     var imageNumber: Int = 0 {
         didSet {

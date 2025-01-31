@@ -10,7 +10,7 @@ import SnapKit
 
 final class DistributeView: BaseView {
 
-    let distributeLabel = UILabel()
+    private let distributeLabel = UILabel()
     
     override func configureHierarchy() {
         addSubview(distributeLabel)

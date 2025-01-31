@@ -13,12 +13,12 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
     
     static let identifier = "TodayMovieCollectionViewCell"
     
-    let moviePosterImage = UIImageView()
+    private let moviePosterImage = UIImageView()
     
-    let movieTitleLabel = UILabel()
+    private let movieTitleLabel = UILabel()
     let movieLikeButton = LikeButton()
     
-    let movieOverviewLabel = UILabel()
+    private let movieOverviewLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

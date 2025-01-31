@@ -13,9 +13,9 @@ final class CastCollectionViewCell: BaseCollectionViewCell {
     
     static let identifier = "CastCollectionViewCell"
     
-    let castImageView = UIImageView()
-    let castNameLabel = UILabel()
-    let movieCharacterNameLabel = UILabel()
+    private let castImageView = UIImageView()
+    private let castNameLabel = UILabel()
+    private let movieCharacterNameLabel = UILabel()
     
     override func configureHierarchy() {
         addSubViews(

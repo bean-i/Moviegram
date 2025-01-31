@@ -13,7 +13,7 @@ final class BackdropCollectionViewCell: BaseCollectionViewCell {
     
     static let identifier = "BackdropCollectionViewCell"
     
-    let backdropImageView = UIImageView()
+    private let backdropImageView = UIImageView()
     
     override func configureHierarchy() {
         addSubview(backdropImageView)

@@ -10,11 +10,11 @@ import SnapKit
 
 final class ProfileView: BaseView {
     
-    let profileImageView = ProfileImageCustomView()
-    let profileNickNameLabel = UILabel()
-    let joinDateLabel = UILabel()
-    let chevronButton = UIImageView()
-    let movieStorageButton = UIButton()
+    private let profileImageView = ProfileImageCustomView()
+    private let profileNickNameLabel = UILabel()
+    private let joinDateLabel = UILabel()
+    private let chevronButton = UIImageView()
+    private let movieStorageButton = UIButton()
     
     override func configureHierarchy() {
         addSubViews(
@@ -84,7 +84,7 @@ final class ProfileView: BaseView {
               let imageNumber = data.imageNumber,
               let joinDate = data.joinDate,
               let storedMovies = data.storedMovies else {
-            print("유저 인포 오류") // 얼럿 띄워줘야하나. . .?
+            print("유저 인포 오류")
             return
         }
         

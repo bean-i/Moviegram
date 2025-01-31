@@ -14,14 +14,14 @@ protocol passUserInfoDelegate: AnyObject {
 final class MainViewController: BaseViewController<MainView> {
     
     // 오늘의 영화에 들어갈 데이터
-    var todayMovies: [Movie] = [] {
+    private var todayMovies: [Movie] = [] {
         didSet {
             mainView.todayMovieCollectionView.reloadData()
         }
     }
     
     // 최근 검색 키워드
-    var recentKeywords: [String] = []
+    private var recentKeywords: [String] = []
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -71,7 +71,7 @@ final class MainViewController: BaseViewController<MainView> {
         navigationItem.title = "Moviegram"
     }
     
-    func updateRecentKeywordView() {
+    private func updateRecentKeywordView() {
         if recentKeywords.count > 0 {
             mainView.recentKeywordCollectionView.isHidden = false
             mainView.noRecentSearchLabel.isHidden = true
@@ -81,7 +81,7 @@ final class MainViewController: BaseViewController<MainView> {
         }
     }
     
-    @objc func deleteAllSearchKeywordButtonTapped() {
+    @objc private func deleteAllSearchKeywordButtonTapped() {
         // userdefaults에 저장 된 정보 삭제
         UserDefaults.standard.removeObject(forKey: UserInfoKey.recentKeywordsKey.rawValue)
         recentKeywords = []
@@ -89,13 +89,13 @@ final class MainViewController: BaseViewController<MainView> {
         updateRecentKeywordView()
     }
     
-    @objc func searchButtonTapped() {
+    @objc private func searchButtonTapped() {
         // 검색 화면 전환
         let vc = SearchViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    @objc func profileViewTapped() {
+    @objc private func profileViewTapped() {
         let vc = ProfileSettingViewController()
         vc.isEditMode = true
         vc.delegate = self
@@ -135,7 +135,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         case mainView.recentKeywordCollectionView:
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentKeywordCollectionViewCell.identifier, for: indexPath) as! RecentKeywordCollectionViewCell
-            cell.keywordLabel.text = recentKeywords[indexPath.item]
+            cell.configureData(text: recentKeywords[indexPath.item])
             return cell
             
         case mainView.todayMovieCollectionView:

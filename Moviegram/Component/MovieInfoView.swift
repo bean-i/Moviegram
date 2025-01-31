@@ -10,8 +10,8 @@ import SnapKit
 
 final class MovieInfoView: BaseView {
 
-    let imageView = UIImageView()
-    let infoLabel = UILabel()
+    private let imageView = UIImageView()
+    private let infoLabel = UILabel()
     
     override func configureHierarchy() {
         addSubViews(

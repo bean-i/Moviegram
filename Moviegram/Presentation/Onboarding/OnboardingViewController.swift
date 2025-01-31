@@ -13,8 +13,7 @@ final class OnboardingViewController: BaseViewController<OnboardingView> {
         mainView.startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
     }
     
-    @objc func startButtonTapped() {
-        print(#function)
+    @objc private func startButtonTapped() {
         let vc = ProfileSettingViewController()
         navigationController?.pushViewController(vc, animated: true)
     }

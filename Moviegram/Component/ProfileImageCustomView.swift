@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 // 프로필 이미지 커스텀 뷰
-class ProfileImageCustomView: BaseView {
+final class ProfileImageCustomView: BaseView {
     
     let profileImageView = UIImageView()
     var imageNumber: Int = 0 {

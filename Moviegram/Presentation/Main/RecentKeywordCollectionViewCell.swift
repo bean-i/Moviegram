@@ -12,9 +12,9 @@ final class RecentKeywordCollectionViewCell: BaseCollectionViewCell {
     
     static let identifier = "RecentKeywordCollectionViewCell"
     
-    let keywordView = UIView()
-    let keywordLabel = UILabel()
-    let xButton = UIButton()
+    private let keywordView = UIView()
+    private let keywordLabel = UILabel()
+    private let xButton = UIButton()
     
     override func configureHierarchy() {
         keywordView.addSubViews(
@@ -51,6 +51,10 @@ final class RecentKeywordCollectionViewCell: BaseCollectionViewCell {
         
         xButton.setImage(UIImage(systemName: "xmark"), for: .normal)
         xButton.tintColor = .black
+    }
+    
+    func configureData(text: String) {
+        keywordLabel.text = text
     }
     
 }

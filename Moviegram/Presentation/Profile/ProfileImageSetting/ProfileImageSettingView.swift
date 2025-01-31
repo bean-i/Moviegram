@@ -11,25 +11,10 @@ import SnapKit
 final class ProfileImageSettingView: BaseView {
 
     let profileImageView = ProfileImageCustomView()
-    let cameraView = UIView()
-    let cameraImageView = UIImageView()
+    private let cameraView = UIView()
+    private let cameraImageView = UIImageView()
     
     let profileImageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: profileImageCollectionViewLayout())
-    
-    static func profileImageCollectionViewLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
-        let inset: CGFloat = 30
-        let spacing: CGFloat = 10
-        let count: CGFloat = 4
-        let deviceWidth = UIScreen.main.bounds.width
-        let size = (deviceWidth - (2 * inset) - ((count - 1) * spacing)) / count
-        layout.scrollDirection = .vertical
-        layout.sectionInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
-        layout.minimumInteritemSpacing = spacing
-        layout.minimumLineSpacing = spacing
-        layout.itemSize = CGSize(width: size, height: size)
-        return layout
-    }
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -80,6 +65,21 @@ final class ProfileImageSettingView: BaseView {
         cameraImageView.contentMode = .scaleAspectFit
         
         profileImageCollectionView.backgroundColor = .clear
+    }
+    
+    static func profileImageCollectionViewLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        let inset: CGFloat = 30
+        let spacing: CGFloat = 10
+        let count: CGFloat = 4
+        let deviceWidth = UIScreen.main.bounds.width
+        let size = (deviceWidth - (2 * inset) - ((count - 1) * spacing)) / count
+        layout.scrollDirection = .vertical
+        layout.sectionInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
+        layout.minimumInteritemSpacing = spacing
+        layout.minimumLineSpacing = spacing
+        layout.itemSize = CGSize(width: size, height: size)
+        return layout
     }
     
 }

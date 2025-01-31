@@ -34,14 +34,14 @@ final class SettingViewController: BaseViewController<SettingView> {
         mainView.settingTableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.identifier)
     }
     
-    func deleteAllUserData() {
+    private func deleteAllUserData() {
         for key in UserInfoKey.allCases {
             UserDefaults.standard.removeObject(forKey: key.rawValue)
         }
         UserInfo.storedMovieList = [] // 이거 왜 해야되는지..?
     }
     
-    func switchToOnboardingScreen() {
+    private func switchToOnboardingScreen() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first else { return }
         
@@ -49,7 +49,7 @@ final class SettingViewController: BaseViewController<SettingView> {
         window.makeKeyAndVisible()
     }
     
-    @objc func profileViewTapped() {
+    @objc private func profileViewTapped() {
         let vc = ProfileSettingViewController()
         vc.isEditMode = true
         vc.delegate = self
@@ -77,7 +77,8 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SettingTableViewCell.identifier, for: indexPath) as! SettingTableViewCell
         
-        cell.settingOptionLabel.text = SettingOptions.allCases[indexPath.row].rawValue
+        let text = SettingOptions.allCases[indexPath.row].rawValue
+        cell.configureData(text: text)
         
         return cell
     }
