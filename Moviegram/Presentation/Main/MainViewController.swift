@@ -177,6 +177,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             let vc = SearchViewController()
             vc.currentKeyword = recentKeywords[indexPath.item]
             vc.mainView.searchBar.text = recentKeywords[indexPath.item]
+            vc.mainView.searchBar.resignFirstResponder() // 키워드 터치 -> 상세화면 전환될 때, 키보드 올리지 않기
             vc.getData()
             navigationController?.pushViewController(vc, animated: true)
             
