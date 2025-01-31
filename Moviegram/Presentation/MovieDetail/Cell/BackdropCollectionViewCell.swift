@@ -36,9 +36,9 @@ final class BackdropCollectionViewCell: BaseCollectionViewCell {
     }
     
     // MARK: - Configure Data
-    func configureData(url: String) {
-        
-        if let url = URL(string: TMDBAPI.imageBaseURL + url) {
+    func configureData(url: String?) {
+        if let urlString = url,
+           let url = URL(string: TMDBAPI.imageBaseURL + urlString) {
             backdropImageView.kf.setImage(with: url)
         }
         

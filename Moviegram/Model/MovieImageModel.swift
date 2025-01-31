@@ -14,5 +14,5 @@ struct MovieImageModel: Decodable {
 }
 
 struct ImagePath: Decodable {
-    let file_path: String
+    let file_path: String?
 }

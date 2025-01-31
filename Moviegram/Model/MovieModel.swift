@@ -10,12 +10,12 @@ import Foundation
 struct MovieModel: Decodable {
     let id: Int
     let backdropURL: String?
-    let title: String
-    let overview: String
+    let title: String?
+    let overview: String?
     let posterURL: String?
-    let genreID: [Int]
-    let releaseDate: String
-    let averageRating: Double
+    let genreID: [Int]?
+    let releaseDate: String?
+    let averageRating: Double?
     
     enum CodingKeys: String, CodingKey {
         case id

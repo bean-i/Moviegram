@@ -177,7 +177,7 @@ final class MovieDetailView: BaseView {
     func configureData(data: MovieModel) {
         let date = data.releaseDate
         let rate = data.averageRating
-        let genreID = data.genreID.prefix(2)
+        let genreID = (data.genreID != nil) ? data.genreID!.prefix(2) : []
         var genre = ""
         
         if genreID.count == 2 {
@@ -186,8 +186,8 @@ final class MovieDetailView: BaseView {
             genre = Genre.getGenre(id: genreID[0])
         }
 
-        releaseView.configureData(image: "calendar", text: date)
-        rateView.configureData(image: "star.fill", text: String(rate))
+        releaseView.configureData(image: "calendar", text: date ?? "")
+        rateView.configureData(image: "star.fill", text: String(rate ?? 0))
         genreView.configureData(image: "film.fill", text: genre)
         
         synopsisDetailLabel.text = data.overview

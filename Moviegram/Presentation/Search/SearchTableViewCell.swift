@@ -103,17 +103,19 @@ final class SearchTableViewCell: BaseTableViewCell {
         }
         
         movieTitleLabel.text = data.title
-        movieReleaseLabel.text = data.releaseDate.convertDateString()
+        movieReleaseLabel.text = data.releaseDate?.convertDateString()
         
-        if data.genreID.count >= 2 {
-            genreBox1.genreTitleId = data.genreID[0]
-            genreBox2.genreTitleId = data.genreID[1]
-        } else if data.genreID.count == 1 {
-            genreBox1.genreTitleId = data.genreID[0]
-            genreBox2.isHidden = true
-        } else {
-            genreBox1.isHidden = true
-            genreBox2.isHidden = true
+        if let genreList = data.genreID {
+            if genreList.count >= 2 {
+                genreBox1.genreTitleId = genreList[0]
+                genreBox2.genreTitleId = genreList[1]
+            } else if genreList.count == 1 {
+                genreBox1.genreTitleId = genreList[0]
+                genreBox2.isHidden = true
+            } else {
+                genreBox1.isHidden = true
+                genreBox2.isHidden = true
+            }
         }
         
         movieLikeButton.id = data.id
