@@ -16,16 +16,16 @@ enum Router {
     case MovieImage(id: Int)
     case Cast(id: Int)
     
-    var endpoint: URL {
+    var endpoint: URL? {
         switch self {
         case .TodayMovie:
-            return URL(string: TMDBAPI.baseURL + "/trending/movie/day")!
+            return URL(string: TMDBAPI.baseURL + "/trending/movie/day")
         case .MovieSearch:
-            return URL(string: TMDBAPI.baseURL + "/search/movie")!
+            return URL(string: TMDBAPI.baseURL + "/search/movie")
         case .MovieImage(let id):
-            return URL(string: TMDBAPI.baseURL + "/movie/\(id)/images")!
+            return URL(string: TMDBAPI.baseURL + "/movie/\(id)/images")
         case .Cast(let id):
-            return URL(string: TMDBAPI.baseURL + "/movie/\(id)/credits")!
+            return URL(string: TMDBAPI.baseURL + "/movie/\(id)/credits")
         }
     }
     

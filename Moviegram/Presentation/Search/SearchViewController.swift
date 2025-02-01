@@ -65,6 +65,8 @@ final class SearchViewController: BaseViewController<SearchView> {
                 }
             }
             
+        } failHandler: { statusCode in
+            self.showErrorAlert(error: statusCode)
         }
     }
     
@@ -118,7 +120,9 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: SearchTableViewCell.identifier, for: indexPath) as! SearchTableViewCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SearchTableViewCell.identifier, for: indexPath) as? SearchTableViewCell else {
+            return UITableViewCell()
+        }
         
         cell.movieLikeButton.delegate = self
         cell.configureData(data: searchMovies[indexPath.row])
@@ -146,7 +150,10 @@ extension SearchViewController: UITableViewDataSourcePrefetching {
                 NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: currentKeyword, page: String(currentPage)), type: MovieSearchModel.self) { value in
                     self.searchMovies.append(contentsOf: value.results)
                     self.mainView.searchTableView.reloadData()
-                } // 실패하면 currentPage -= 1
+                } failHandler: { statusCode in
+                    self.currentPage -= 1
+                    self.showErrorAlert(error: statusCode)
+                }
             }
         }
     }

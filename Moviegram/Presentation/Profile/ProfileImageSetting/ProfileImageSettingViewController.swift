@@ -40,7 +40,9 @@ extension ProfileImageSettingViewController: UICollectionViewDelegate, UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileImageCollectionViewCell.identifier, for: indexPath) as! ProfileImageCollectionViewCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileImageCollectionViewCell.identifier, for: indexPath) as? ProfileImageCollectionViewCell else {
+            return UICollectionViewCell()
+        }
         
         cell.isSelected = false
         cell.imageNumber = indexPath.item

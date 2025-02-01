@@ -41,7 +41,10 @@ final class MainViewController: BaseViewController<MainView> {
         NetworkManager.shared.getMovieData(api: .TodayMovie,
                                            type: TodayMovieModel.self) { value in
             self.todayMovies = value.results
+        } failHandler: { statusCode in
+            self.showErrorAlert(error: statusCode)
         }
+
     }
     
     // MARK: - Configure
@@ -136,13 +139,17 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch collectionView {
         case mainView.recentKeywordCollectionView:
             
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentKeywordCollectionViewCell.identifier, for: indexPath) as! RecentKeywordCollectionViewCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentKeywordCollectionViewCell.identifier, for: indexPath) as? RecentKeywordCollectionViewCell else {
+                return UICollectionViewCell()
+            }
             cell.configureData(text: recentKeywords[indexPath.item])
             return cell
             
         case mainView.todayMovieCollectionView:
             
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayMovieCollectionViewCell.identifier, for: indexPath) as! TodayMovieCollectionViewCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayMovieCollectionViewCell.identifier, for: indexPath) as? TodayMovieCollectionViewCell else {
+                return UICollectionViewCell()
+            }
             cell.movieLikeButton.delegate = self
             cell.configureData(data: todayMovies[indexPath.item])
             return cell

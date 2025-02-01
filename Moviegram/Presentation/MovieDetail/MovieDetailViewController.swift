@@ -68,11 +68,15 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
             self.mainView.pageControl.numberOfPages = self.backdropImages.count
             // 포스터 이미지
             self.posterImages = value.posters
+        } failHandler: { statusCode in
+            self.showErrorAlert(error: statusCode)
         }
         
         // 캐스트 네트워크
         NetworkManager.shared.getMovieData(api: .Cast(id: movieInfo.id), type: CreditModel.self) { value in
             self.castInfos = value.cast
+        } failHandler: { statusCode in
+            self.showErrorAlert(error: statusCode)
         }
     }
     
@@ -116,19 +120,25 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
         switch collectionView {
         case mainView.backdropCollectionView:
             
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BackdropCollectionViewCell.identifier, for: indexPath) as! BackdropCollectionViewCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BackdropCollectionViewCell.identifier, for: indexPath) as? BackdropCollectionViewCell else {
+                return UICollectionViewCell()
+            }
             cell.configureData(url: backdropImages[indexPath.item].file_path)
             return cell
             
         case mainView.castCollectionView:
             
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.identifier, for: indexPath) as! CastCollectionViewCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.identifier, for: indexPath) as? CastCollectionViewCell else {
+                return UICollectionViewCell()
+            }
             cell.configureData(data: castInfos[indexPath.item])
             return cell
             
         case mainView.posterCollectionView:
             
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterCollectionViewCell.identifier, for: indexPath) as! PosterCollectionViewCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterCollectionViewCell.identifier, for: indexPath) as? PosterCollectionViewCell else {
+                return UICollectionViewCell()
+            }
             cell.configureData(url: posterImages[indexPath.item].file_path)
             return cell
             
