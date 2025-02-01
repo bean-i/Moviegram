@@ -24,6 +24,14 @@ extension UIViewController {
         self.present(alert, animated: true)
     }
     
+    // MARK: - Alert: Error
+    func showErrorAlert(error: StatusCode) {
+        showAlert(
+            title: error.rawValue,
+            message: error.description,
+            cancel: false) { }
+    }
+    
     // MARK: - 키보드 제스처
     func dismissKeyboardWhenTapped() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
