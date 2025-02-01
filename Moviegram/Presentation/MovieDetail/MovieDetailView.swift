@@ -135,6 +135,7 @@ final class MovieDetailView: BaseView {
         backdropCollectionView.backgroundColor = .black
         backdropCollectionView.showsHorizontalScrollIndicator = false
         
+        pageControl.hidesForSinglePage = true
         pageControl.currentPageIndicatorTintColor = .white
         pageControl.pageIndicatorTintColor = .customGray
         pageControl.backgroundColor = .darkGray
