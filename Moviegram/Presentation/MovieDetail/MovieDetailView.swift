@@ -187,7 +187,7 @@ final class MovieDetailView: BaseView {
         }
 
         releaseView.configureData(image: "calendar", text: date ?? "")
-        rateView.configureData(image: "star.fill", text: String(rate ?? 0))
+        rateView.configureData(image: "star.fill", text: String(format: "%.1f", rate ?? 0))
         genreView.configureData(image: "film.fill", text: genre)
         
         synopsisDetailLabel.text = data.overview
