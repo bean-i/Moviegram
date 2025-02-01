@@ -45,6 +45,7 @@ final class SearchView: BaseView {
     override func configureView() {
         searchBar.isUserInteractionEnabled = true
         searchBar.searchBarStyle = .minimal
+        searchBar.searchTextField.clearButtonMode = .never
         searchBar.searchTextField.backgroundColor = .customDarkGray
         searchBar.searchTextField.textColor = .white
         searchBar.searchTextField.leftView?.tintColor = .customGray
