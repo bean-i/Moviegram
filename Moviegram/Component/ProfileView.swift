@@ -74,6 +74,7 @@ final class ProfileView: BaseView {
         chevronButton.image = UIImage(systemName: "chevron.right")
         chevronButton.tintColor = .gray
         
+        movieStorageButton.isEnabled = false
         movieStorageButton.backgroundColor = .customTeal
         movieStorageButton.layer.cornerRadius = 10
         movieStorageButton.tintColor = .white
