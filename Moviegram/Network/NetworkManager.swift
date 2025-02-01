@@ -17,20 +17,37 @@ final class NetworkManager {
     
     func getMovieData<T: Decodable>(api: Router,
                                     type: T.Type,
-                                    completionHandler: @escaping (T) -> Void) {
+                                    completionHandler: @escaping (T) -> Void,
+                                    failHandler: @escaping (StatusCode) -> Void) {
         
-        AF.request(
-            api.endpoint,
-            method: api.method,
-            parameters: api.parameters,
-            encoding: URLEncoding.queryString,
-            headers: api.header
-        ).responseDecodable(of: T.self) { response in
+        guard let endpoint = api.endpoint else {
+            failHandler(.badRequest)
+            return
+        }
+        
+        AF.request(endpoint,
+                   method: api.method,
+                   parameters: api.parameters,
+                   encoding: URLEncoding.queryString,
+                   headers: api.header)
+        .validate(statusCode: 200..<300)
+        .responseDecodable(of: T.self) { response in
             switch response.result {
             case .success(let value):
                 completionHandler(value)
             case .failure(let error):
-                print(error)
+                if let errorCode = error.responseCode {
+                    switch errorCode {
+                    case 400..<500:
+                        failHandler(.badRequest)
+                    case 500..<600:
+                        failHandler(.serverError)
+                    default:
+                        failHandler(.unknownError)
+                    }
+                } else {
+                    failHandler(.unknownError)
+                }
             }
         }
     }
