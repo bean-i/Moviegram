@@ -15,15 +15,11 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
 
     private let likeButton = LikeButton()
     
-    private var backdropImages: [ImagePath] = [] {
-        didSet { mainView.backdropCollectionView.reloadData() }
-    }
-    private var castInfos: [Cast] = [] {
-        didSet { mainView.castCollectionView.reloadData() }
-    }
-    private var posterImages: [ImagePath] = [] {
-        didSet { mainView.posterCollectionView.reloadData() }
-    }
+    private var backdropImages: [ImagePath] = []
+    private var castInfos: [Cast] = []
+    private var posterImages: [ImagePath] = []
+    
+    private let group = DispatchGroup()
     
     // MARK: - 생명주기
     override func viewWillAppear(_ animated: Bool) {
@@ -60,6 +56,7 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
         // 영화 상세 정보 나타내기
         mainView.configureData(data: movieInfo)
         
+        group.enter()
         // 백드롭 + 포스터 이미지 네트워크
         NetworkManager.shared.getMovieData(api: .MovieImage(id: movieInfo.id), type: MovieImageModel.self) { value in
             // 백드롭 이미지 5개까지만 넣기
@@ -68,15 +65,26 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
             self.mainView.pageControl.numberOfPages = self.backdropImages.count
             // 포스터 이미지
             self.posterImages = value.posters
+            self.group.leave()
         } failHandler: { statusCode in
+            self.group.leave()
             self.showErrorAlert(error: statusCode)
         }
         
+        group.enter()
         // 캐스트 네트워크
         NetworkManager.shared.getMovieData(api: .Cast(id: movieInfo.id), type: CreditModel.self) { value in
             self.castInfos = value.cast
+            self.group.leave()
         } failHandler: { statusCode in
+            self.group.leave()
             self.showErrorAlert(error: statusCode)
+        }
+        
+        group.notify(queue: .main) {
+            self.mainView.backdropCollectionView.reloadData()
+            self.mainView.castCollectionView.reloadData()
+            self.mainView.posterCollectionView.reloadData()
         }
     }
     
