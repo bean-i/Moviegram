@@ -8,6 +8,11 @@
 import UIKit
 import SnapKit
 
+// MARK: - Protocol: 키워드 삭제 Delegate
+protocol DeleteKeywordDelegate: AnyObject {
+    func deleteKeyword(index: Int)
+}
+
 // MARK: - 최근 검색 키워드 CollectionViewCell
 final class RecentKeywordCollectionViewCell: BaseCollectionViewCell {
     
@@ -17,6 +22,9 @@ final class RecentKeywordCollectionViewCell: BaseCollectionViewCell {
     private let keywordView = UIView()
     private let keywordLabel = UILabel()
     private let xButton = UIButton()
+    
+    weak var delegate: DeleteKeywordDelegate?
+    var index: Int?
     
     // MARK: - Configure UI
     override func configureHierarchy() {
@@ -54,11 +62,19 @@ final class RecentKeywordCollectionViewCell: BaseCollectionViewCell {
         
         xButton.setImage(UIImage(systemName: "xmark"), for: .normal)
         xButton.tintColor = .black
+        xButton.addTarget(self, action: #selector(xButtonTapped), for: .touchUpInside)
     }
     
     // MARK: - Configure Data
     func configureData(text: String) {
         keywordLabel.text = text
+    }
+    
+    // MARK: - Methods
+    @objc private func xButtonTapped() {
+        if let index {
+            delegate?.deleteKeyword(index: index)
+        }
     }
     
 }

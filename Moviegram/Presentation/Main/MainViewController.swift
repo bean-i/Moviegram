@@ -142,6 +142,8 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentKeywordCollectionViewCell.identifier, for: indexPath) as? RecentKeywordCollectionViewCell else {
                 return UICollectionViewCell()
             }
+            cell.delegate = self
+            cell.index = indexPath.item
             cell.configureData(text: recentKeywords[indexPath.item])
             return cell
             
@@ -210,5 +212,15 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
 extension MainViewController: passUserInfoDelegate {
     func passUserInfo() {
         mainView.profileView.configureData(data: UserInfo.shared)
+    }
+}
+
+extension MainViewController: DeleteKeywordDelegate {
+    func deleteKeyword(index: Int) { // 키워드 삭제
+        var keywords = recentKeywords
+        keywords.remove(at: index)
+        UserDefaults.standard.set(keywords, forKey: UserInfoKey.recentKeywordsKey.rawValue)
+        recentKeywords = UserInfo.shared.recentKeywords ?? []
+        mainView.recentKeywordCollectionView.reloadData()
     }
 }
