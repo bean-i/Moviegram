@@ -39,6 +39,7 @@ final class SettingView: BaseView {
     override func configureView() {
         settingTableView.backgroundColor = .black
         settingTableView.separatorColor = .customGray
+        settingTableView.isScrollEnabled = false
         settingTableView.separatorInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
     }
     
