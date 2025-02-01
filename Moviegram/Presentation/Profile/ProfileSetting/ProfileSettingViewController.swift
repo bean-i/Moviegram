@@ -35,7 +35,7 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     private var randomImageNumber = Int.random(in: 0...11)
     private let forbiddenStrings: [Character] = ["@", "#", "$", "%"]
     var isEditMode = false
-    weak var delegate: passUserInfoDelegate?
+    weak var delegate: PassUserInfoDelegate?
     
     // MARK: - Configure
     override func configureView() {

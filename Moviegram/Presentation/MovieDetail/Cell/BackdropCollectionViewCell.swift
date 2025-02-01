@@ -32,6 +32,7 @@ final class BackdropCollectionViewCell: BaseCollectionViewCell {
     override func configureView() {
         backdropImageView.clipsToBounds = true
         backdropImageView.backgroundColor = .black
+        backdropImageView.tintColor = .customGray
         backdropImageView.contentMode = .scaleAspectFill
     }
     
@@ -40,6 +41,9 @@ final class BackdropCollectionViewCell: BaseCollectionViewCell {
         if let urlString = url,
            let url = URL(string: TMDBAPI.imageBaseURL + urlString) {
             backdropImageView.kf.setImage(with: url)
+        } else {
+            backdropImageView.contentMode = .scaleAspectFit
+            backdropImageView.image = UIImage(systemName: "exclamationmark.triangle")
         }
         
     }

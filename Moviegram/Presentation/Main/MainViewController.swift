@@ -209,7 +209,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
 
 // MARK: - Extension: Delegate
 // 유저 정보 전달 delegate 채택
-extension MainViewController: passUserInfoDelegate {
+extension MainViewController: PassUserInfoDelegate {
     func passUserInfo() {
         mainView.profileView.configureData(data: UserInfo.shared)
     }

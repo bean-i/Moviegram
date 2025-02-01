@@ -11,6 +11,7 @@ import UIKit
 final class ProfileImageSettingViewController: BaseViewController<ProfileImageSettingView> {
     
     // MARK: - Properties
+    var imageCount: Int = 12
     var selectedImageNumber: Int = 0
     var passSelectedImageNumber: ((Int) -> Void)?
     
@@ -36,7 +37,7 @@ final class ProfileImageSettingViewController: BaseViewController<ProfileImageSe
 // MARK: - Extension: CollectionView
 extension ProfileImageSettingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 12
+        return imageCount
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

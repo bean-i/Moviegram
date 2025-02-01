@@ -31,6 +31,7 @@ final class PosterCollectionViewCell: BaseCollectionViewCell {
     
     override func configureView() {
         posterImageView.contentMode = .scaleAspectFill
+        posterImageView.tintColor = .customGray
     }
     
     // MARK: - Configure Data
@@ -38,6 +39,9 @@ final class PosterCollectionViewCell: BaseCollectionViewCell {
         if let url,
            let imageURL = URL(string: TMDBAPI.imageBaseURL + url) {
             posterImageView.kf.setImage(with: imageURL)
+        } else {
+            posterImageView.contentMode = .scaleAspectFit
+            posterImageView.image = UIImage(systemName: "exclamationmark.triangle")
         }
     }
     

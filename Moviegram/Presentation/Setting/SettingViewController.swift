@@ -113,7 +113,7 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 // MARK: - Extension: Delegate
-extension SettingViewController: passUserInfoDelegate {
+extension SettingViewController: PassUserInfoDelegate {
     func passUserInfo() {
         mainView.profileView.configureData(data: UserInfo.shared)
     }

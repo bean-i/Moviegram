@@ -52,6 +52,7 @@ final class CastCollectionViewCell: BaseCollectionViewCell {
         castImageView.clipsToBounds = true
         castImageView.contentMode = .scaleAspectFill
         castImageView.layer.cornerRadius = 30
+        castImageView.tintColor = .customGray
         
         castNameLabel.font = .Font.medium.of(weight: .bold)
         castNameLabel.textColor = .white
@@ -70,6 +71,9 @@ final class CastCollectionViewCell: BaseCollectionViewCell {
         if let path = data.profile_path,
            let url = URL(string: TMDBAPI.imageBaseURL + path) {
             castImageView.kf.setImage(with: url)
+        } else {
+            castImageView.contentMode = .scaleAspectFit
+            castImageView.image = UIImage(systemName: "exclamationmark.triangle")
         }
         
         castNameLabel.text = data.name
