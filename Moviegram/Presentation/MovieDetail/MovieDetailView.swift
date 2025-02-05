@@ -155,6 +155,7 @@ final class MovieDetailView: BaseView {
         
         seeMoreButton.configuration = UIButton.Configuration.customStyle(title: "More")
         seeMoreButton.addTarget(self, action: #selector(seeMoreButtonTapped), for: .touchUpInside)
+        seeMoreButton.isHidden = true
         
         castLabel.text = "Cast"
         castLabel.textColor = .white
@@ -191,7 +192,18 @@ final class MovieDetailView: BaseView {
         rateView.configureData(image: "star.fill", text: String(format: "%.1f", rate ?? 0))
         genreView.configureData(image: "film.fill", text: genre)
         
+        // 줄거리 길이에 따라, seeMoreButton 조정
+        let textWidth = data.overview?.calculateTextWidth(font: .Font.medium.of(weight: .medium)) ?? 0
+        let deviceWidth = UIScreen.main.bounds.width
+
+        if (textWidth / deviceWidth) >= 3 {
+            seeMoreButton.isHidden = false
+        } else {
+            seeMoreButton.isHidden = true
+        }
+
         synopsisDetailLabel.text = data.overview
+        synopsisDetailLabel.font = .Font.medium.of(weight: .medium)
         synopsisDetailLabel.numberOfLines = 3
     }
     
