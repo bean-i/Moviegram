@@ -24,6 +24,7 @@ class BaseViewController<T: UIView>: UIViewController {
         configureView()
         configureDelegate()
         configureGesture()
+        bindData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -41,6 +42,8 @@ class BaseViewController<T: UIView>: UIViewController {
     func configureDelegate() { }
     
     func configureGesture() { }
+    
+    func bindData() { }
     
 }
 
