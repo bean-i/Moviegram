@@ -54,10 +54,13 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
             self.mainView.nicknameConditionStatusLabel.text = text
         }
         
-        // 닉네임 상태 레이블에 따른 버튼 변화
+        // 닉네임 상태 레이블에 따른 변화
         viewModel.outputApproveStatus.lazyBind { bool in
+            // 버튼
             self.mainView.completionButton.isEnabled = bool
             self.mainView.completionButton.backgroundColor = bool ? .point : .darkGray
+            // 레이블 색상
+            self.mainView.nicknameConditionStatusLabel.textColor = bool ? .point : .customRed
         }
         
         // 프로필 이미지 선택 -> 화면 전환
