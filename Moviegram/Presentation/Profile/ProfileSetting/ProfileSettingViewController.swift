@@ -31,24 +31,66 @@ enum ConditionStatus {
 // MARK: - 프로필 설정 ViewController
 final class ProfileSettingViewController: BaseViewController<ProfileSettingView> {
     
-    // MARK: - Properties
-    private var randomImageNumber = Int.random(in: 0...11)
-    private let forbiddenStrings: [Character] = ["@", "#", "$", "%"]
-    var isEditMode = false
-    weak var delegate: PassUserInfoDelegate?
+    // MARK: - MVVM 추가
+    let viewModel = ProfileSettingViewModel()
     
-    // MARK: - Configure
-    override func configureView() {
-        if isEditMode {
-            editModeNavigationBar()
-            configureEditModeView()
-            title = "프로필 편집"
-        } else {
-            configureSettingModeView()
-            title = "프로필 설정"
+    override func bindData() {
+        // 타이틀
+        viewModel.outputEditModeText.bind { text in
+            self.title = text
+        }
+        
+        // editMode에 따라 뷰 다르게 보여주기
+        viewModel.outputEditMode.bind { bool in
+            self.configureSettingModeView()
+            if bool {
+                self.editModeNavigationBar()
+                self.configureEditModeView()
+            }
+        }
+        
+        // 닉네임 상태 레이블
+        viewModel.outputTextFieldText.bind { text in
+            self.mainView.nicknameConditionStatusLabel.text = text
+        }
+        
+        // 닉네임 상태 레이블에 따른 버튼 변화
+        viewModel.outputApproveStatus.lazyBind { bool in
+            self.mainView.completionButton.isEnabled = bool
+            self.mainView.completionButton.backgroundColor = bool ? .point : .darkGray
+        }
+        
+        // 프로필 이미지 선택 -> 화면 전환
+        viewModel.outputProfileImageTapped.lazyBind { _ in
+            let vc = ProfileImageSettingViewController()
+            vc.viewModel.inputEditMode.value = self.viewModel.inputEditMode.value
+            vc.selectedImageNumber = self.viewModel.randomImageNumber
+            vc.passSelectedImageNumber = { value in
+                self.viewModel.randomImageNumber = value
+                self.mainView.profileImageView.imageNumber = value
+            }
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        // 저장 버튼 선택 이후 화면 전환
+        viewModel.outputCompletionButtonTapped.lazyBind { bool in
+            if bool {
+                self.dismiss(animated: true)
+            } else {
+                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                      let window = windowScene.windows.first else { return }
+                window.rootViewController = TabBarController()
+                window.makeKeyAndVisible()
+            }
+        }
+        
+        // 취소 버튼 선택
+        viewModel.outputCancelButtonTapped.lazyBind { _ in
+            self.dismiss(animated: true)
         }
     }
     
+    // MARK: - Configure
     override func configureGesture() {
         self.dismissKeyboardWhenTapped()
         
@@ -62,18 +104,17 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     
     // MARK: - Methods: UI
     private func configureEditModeView() {
-        mainView.completionButton.isHidden = true
         if let userImageNumber = UserInfo.shared.imageNumber,
            let userNickname = UserInfo.shared.nickname {
-            randomImageNumber = userImageNumber
-            mainView.profileImageView.imageNumber = randomImageNumber
+            viewModel.randomImageNumber = userImageNumber
             mainView.nicknameTextField.text = userNickname
+            viewModel.inputTextFieldText.value = userNickname
         }
     }
     
     private func configureSettingModeView() {
-        mainView.completionButton.isHidden = false
-        mainView.profileImageView.imageNumber = randomImageNumber
+        mainView.completionButton.isHidden = viewModel.inputEditMode.value
+        mainView.profileImageView.imageNumber = viewModel.randomImageNumber
     }
     
     private func editModeNavigationBar() {
@@ -95,82 +136,22 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     
     @objc func profileImageTapped() {
         // 프로필 이미지 설정 화면으로 전환
-        let vc = ProfileImageSettingViewController()
-        vc.title = isEditMode ? "프로필 이미지 편집" : "프로필 이미지 설정"
-        vc.selectedImageNumber = randomImageNumber
-        vc.passSelectedImageNumber = { value in
-            self.randomImageNumber = value
-            self.mainView.profileImageView.imageNumber = value
-        }
-        navigationController?.pushViewController(vc, animated: true)
+        viewModel.outputProfileImageTapped.value = ()
     }
     
     @objc func cancelButtonTapped() {
-        dismiss(animated: true)
+        viewModel.outputCancelButtonTapped.value = ()
     }
     
     // MARK: - Methods - 닉네임 설정
     @objc func textFieldDidChange(_ textField: UITextField) {
-        guard let text = textField.text else {
-            showAlert(
-                title: "텍스트 오류",
-                message: "검색어를 다시 작성해 주세요.",
-                cancel: false) { }
-            return
-        }
-
-        for str in text {
-            // 특수문자 검사
-            if forbiddenStrings.contains(String(str)) {
-                updateNicknameConditionStatusLabel(ConditionStatus.specialCharacterLimit.description)
-                return
-            }
-            
-            // 숫자 검사
-            if let _ = Int(String(str)) {
-                updateNicknameConditionStatusLabel(ConditionStatus.numberLimit.description)
-                return
-            }
-        }
-        
-        // 특수문자, 숫자 검사 통과하면
-        // 길이 검사
-        if text.count >= 2 && text.count < 10 {
-            updateNicknameConditionStatusLabel(ConditionStatus.approve.description)
-        } else {
-            updateNicknameConditionStatusLabel(ConditionStatus.lengthLimit.description)
-        }
-        
-    }
-    
-    func updateNicknameConditionStatusLabel(_ text: String) {
-        mainView.nicknameConditionStatusLabel.text = text
-        
-        mainView.completionButton.isEnabled = false // approve인 경우에만, true로 설정
-        if text == ConditionStatus.approve.description {
-            // 완료 버튼 누를 수 있도록
-            mainView.completionButton.isEnabled = true
-        }
+        // 텍스트필드의 텍스트 값 넘겨주기
+        viewModel.inputTextFieldText.value = textField.text
     }
     
     @objc func completionButtonTapped() {
         // 유저 정보 저장
-        UserInfo.shared.imageNumber = randomImageNumber
-        UserInfo.shared.nickname = mainView.nicknameTextField.text
-        
-        if isEditMode {
-            delegate?.passUserInfo()
-            dismiss(animated: true)
-        } else {
-            UserInfo.shared.joinDate = DateFormatter.stringFromDate(Date())
-            UserInfo.shared.storedMovies = []
-            UserInfo.shared.isRegistered = true
-            
-            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                  let window = windowScene.windows.first else { return }
-            window.rootViewController = TabBarController()
-            window.makeKeyAndVisible()
-        }
+        viewModel.inputCompletionButtonTapped.value = ()
     }
     
 }
