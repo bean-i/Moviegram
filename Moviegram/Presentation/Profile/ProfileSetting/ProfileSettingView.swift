@@ -107,11 +107,10 @@ final class ProfileSettingView: BaseView {
         
         completionButton.setTitle("완료", for: .normal)
         completionButton.titleLabel?.font = .Font.large.of(weight: .heavy)
-        completionButton.setTitleColor(.point, for: .normal)
-        completionButton.backgroundColor = .black
+        completionButton.setTitleColor(.white, for: .normal)
+        completionButton.backgroundColor = .darkGray
         completionButton.layer.cornerRadius = 20
         completionButton.layer.borderWidth = 2
-        completionButton.layer.borderColor = UIColor.point.cgColor
         completionButton.isEnabled = false
     }
 
