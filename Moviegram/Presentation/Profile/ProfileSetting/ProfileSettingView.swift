@@ -22,6 +22,15 @@ final class ProfileSettingView: BaseView {
     
     let nicknameConditionStatusLabel = UILabel()
     
+    private let mbtiLabel = UILabel()
+    private let stackView = UIStackView()
+    let mbtiCollectionViews = [
+        MBTICollectionView(mbtiData: ["E", "I"]),
+        MBTICollectionView(mbtiData: ["S", "N"]),
+        MBTICollectionView(mbtiData: ["T", "F"]),
+        MBTICollectionView(mbtiData: ["J", "P"])
+    ]
+    
     let completionButton = UIButton()
     
     // MARK: - Configure UI
@@ -32,6 +41,8 @@ final class ProfileSettingView: BaseView {
 
     override func configureHierarchy() {
         
+        mbtiCollectionViews.forEach { stackView.addArrangedSubview($0) }
+        
         cameraView.addSubview(cameraImageView)
         
         addSubViews(
@@ -40,6 +51,8 @@ final class ProfileSettingView: BaseView {
             nicknameTextField,
             nicknameTextFieldUnderLine,
             nicknameConditionStatusLabel,
+            mbtiLabel,
+            stackView,
             completionButton
         )
     }
@@ -79,10 +92,22 @@ final class ProfileSettingView: BaseView {
             make.horizontalEdges.equalToSuperview().inset(20)
         }
         
+        mbtiLabel.snp.makeConstraints { make in
+            make.top.equalTo(nicknameConditionStatusLabel.snp.bottom).offset(30)
+            make.leading.equalToSuperview().inset(20)
+        }
+        
+        stackView.snp.makeConstraints { make in
+            make.top.equalTo(nicknameConditionStatusLabel.snp.bottom).offset(30)
+            make.trailing.equalToSuperview().inset(10)
+            make.width.equalTo(270)
+            make.height.equalTo(130)
+        }
+        
         completionButton.snp.makeConstraints { make in
-            make.top.equalTo(nicknameConditionStatusLabel.snp.bottom).offset(20)
             make.horizontalEdges.equalToSuperview().inset(15)
             make.height.equalTo(44)
+            make.bottom.equalTo(safeAreaLayoutGuide).inset(20)
         }
         
     }
@@ -98,12 +123,24 @@ final class ProfileSettingView: BaseView {
         cameraImageView.contentMode = .scaleAspectFit
         
         nicknameTextField.textColor = .white
+        nicknameTextField.placeholder = "닉네임을 입력해주세요 :)"
+        nicknameTextField.font = .Font.medium.of(weight: .medium)
+        nicknameTextField.setPlaceholder(color: .customGray)
+        
         
         nicknameTextFieldUnderLine.backgroundColor = .white
         
         nicknameConditionStatusLabel.textAlignment = .left
         nicknameConditionStatusLabel.textColor = .point
         nicknameConditionStatusLabel.font = .Font.small.of(weight: .medium)
+        
+        mbtiLabel.text = "MBTI"
+        mbtiLabel.textColor = .white
+        mbtiLabel.font = .Font.large.of(weight: .bold)
+        
+        stackView.axis = .horizontal
+        stackView.spacing = 10
+        stackView.distribution = .fillEqually
         
         completionButton.setTitle("완료", for: .normal)
         completionButton.titleLabel?.font = .Font.large.of(weight: .heavy)
@@ -112,6 +149,14 @@ final class ProfileSettingView: BaseView {
         completionButton.layer.cornerRadius = 20
         completionButton.layer.borderWidth = 2
         completionButton.isEnabled = false
+    }
+    
+    private func configureCollectionViewLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumInteritemSpacing = 10
+        layout.itemSize = CGSize(width: 60, height: 60)
+        return layout
     }
 
 }

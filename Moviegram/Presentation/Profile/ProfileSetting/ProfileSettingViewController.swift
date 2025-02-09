@@ -33,6 +33,7 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     
     // MARK: - MVVM 추가
     let viewModel = ProfileSettingViewModel()
+    weak var delegate: PassMBTIDelegate?
     
     override func bindData() {
         // 타이틀
@@ -56,19 +57,22 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
         
         // 닉네임 상태 레이블에 따른 변화
         viewModel.outputApproveStatus.lazyBind { bool in
-            // 버튼
-            self.mainView.completionButton.isEnabled = bool
-            self.mainView.completionButton.backgroundColor = bool ? .point : .darkGray
-            // 레이블 색상
             self.mainView.nicknameConditionStatusLabel.textColor = bool ? .point : .customRed
+        }
+        
+        viewModel.outputCompletionButtonEnabled.lazyBind { bool in
+            print(bool)
+            self.mainView.completionButton.isEnabled = bool
+            self.navigationItem.rightBarButtonItem?.isEnabled = bool
+            self.mainView.completionButton.backgroundColor = bool ? .point : .darkGray
         }
         
         // 프로필 이미지 선택 -> 화면 전환
         viewModel.outputProfileImageTapped.lazyBind { _ in
             let vc = ProfileImageSettingViewController()
             vc.viewModel.inputEditMode.value = self.viewModel.inputEditMode.value
-            vc.selectedImageNumber = self.viewModel.randomImageNumber
-            vc.passSelectedImageNumber = { value in
+            vc.viewModel.outputSelectedImageNumber.value = self.viewModel.randomImageNumber
+            vc.viewModel.passSelectedImageNumber = { value in
                 self.viewModel.randomImageNumber = value
                 self.mainView.profileImageView.imageNumber = value
             }
@@ -105,13 +109,35 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
         mainView.cameraView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileImageTapped)))
     }
     
+    override func configureDelegate() {
+        // 4개의 컬렉션뷰 delegate 설정
+        let mbtis = mainView.mbtiCollectionViews
+        for item in mbtis {
+            item.delegate = self
+        }
+    }
+    
     // MARK: - Methods: UI
     private func configureEditModeView() {
+        print("editmode")
         if let userImageNumber = UserInfo.shared.imageNumber,
-           let userNickname = UserInfo.shared.nickname {
-            viewModel.randomImageNumber = userImageNumber
+           let userNickname = UserInfo.shared.nickname,
+           let mbti = UserInfo.shared.mbti{
+            mainView.profileImageView.imageNumber = userImageNumber
             mainView.nicknameTextField.text = userNickname
+            viewModel.randomImageNumber = userImageNumber
             viewModel.inputTextFieldText.value = userNickname
+            
+            // 네개의 컬렉션뷰에 mbti 표시하기
+            for currentView in mainView.mbtiCollectionViews {
+                for m in mbti {
+                    for (index, data) in currentView.mbtiData.enumerated() {
+                        if data == m {
+                            currentView.collectionView.selectItem(at: IndexPath(item: index, section: 0), animated: false, scrollPosition: .centeredHorizontally)
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -158,3 +184,16 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     }
     
 }
+
+extension ProfileSettingViewController: PassMBTIDelegate {
+    
+    // 뷰모델에 선택된 mbti 넘겨주기
+    // 넘겨준 데이터가 있으면 삭제하고
+    // 넘겨준 데이터가 없으면 넣어주기!
+    func passMBTI(data: String) {
+        print(#function)
+        viewModel.inputMBTI.value = data
+    }
+    
+}
+

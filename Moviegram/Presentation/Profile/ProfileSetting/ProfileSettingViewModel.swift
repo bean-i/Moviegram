@@ -26,12 +26,18 @@ final class ProfileSettingViewModel {
     // 프로필 이미지 탭
     var outputProfileImageTapped: Observable<Void?> = Observable(nil)
     
+    // MBTI
+    var mbti: Set<String> = []
+    var inputMBTI: Observable<String> = Observable("")
+    
     // 취소버튼 탭
     var outputCancelButtonTapped: Observable<Void?> = Observable(nil)
     
     // 저장버튼 탭
     var inputCompletionButtonTapped: Observable<Void?> = Observable(nil)
     var outputCompletionButtonTapped: Observable<Bool> = Observable(false)
+    
+    var outputCompletionButtonEnabled: Observable<Bool> = Observable(false)
     
     init() {
         
@@ -48,6 +54,10 @@ final class ProfileSettingViewModel {
             self.saveUserInfo()
         }
         
+        inputMBTI.lazyBind { _ in
+            self.setMBTI()
+        }
+        
     }
     
     private func checkNicknameConditionStatus() {
@@ -61,12 +71,14 @@ final class ProfileSettingViewModel {
             // 특수문자 검사
             if forbiddenStrings.contains(String(str)) {
                 outputTextFieldText.value = ConditionStatus.specialCharacterLimit.description
+                checkCompletion()
                 return
             }
             
             // 숫자 검사
             if let _ = Int(String(str)) {
                 outputTextFieldText.value = ConditionStatus.numberLimit.description
+                checkCompletion()
                 return
             }
         }
@@ -78,8 +90,8 @@ final class ProfileSettingViewModel {
             outputApproveStatus.value = true
         } else {
             outputTextFieldText.value = ConditionStatus.lengthLimit.description
-            outputApproveStatus.value = false
         }
+        checkCompletion()
     }
 
     private func saveUserInfo() {
@@ -91,6 +103,7 @@ final class ProfileSettingViewModel {
         
         UserInfo.shared.imageNumber = randomImageNumber
         UserInfo.shared.nickname = nickname
+        UserInfo.shared.mbti = Array(mbti)
         
         if inputEditMode.value {
             delegate?.passUserInfo()
@@ -100,6 +113,32 @@ final class ProfileSettingViewModel {
             UserInfo.shared.storedMovies = []
             UserInfo.shared.isRegistered = true
             outputCompletionButtonTapped.value = inputEditMode.value
+        }
+    }
+    
+    // MBTI 컬렉션뷰의 데이터 저장
+    // 데이터 있으면 삭제, 없으면 추가
+    private func setMBTI() {
+        let data = inputMBTI.value
+        if mbti.contains(data) {
+            mbti.remove(data)
+        } else {
+            mbti.insert(data)
+        }
+        checkCompletion()
+    }
+    
+    // 저장 버튼 업데이트
+    private func checkCompletion() {
+        print(#function)
+        print(mbti)
+        if outputTextFieldText.value == ConditionStatus.approve.description,
+           mbti.count == 4 {
+            print("저장 가능")
+            outputCompletionButtonEnabled.value = true
+        } else {
+            print("저장 불가능")
+            outputCompletionButtonEnabled.value = false
         }
     }
 }
