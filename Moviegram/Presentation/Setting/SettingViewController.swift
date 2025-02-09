@@ -48,8 +48,8 @@ final class SettingViewController: BaseViewController<SettingView> {
     // 프로필 편집 모달 띄우기
     @objc private func profileViewTapped() {
         let vc = ProfileSettingViewController()
-        vc.isEditMode = true
-        vc.delegate = self
+        vc.viewModel.inputEditMode.value = true
+        vc.viewModel.delegate = self
         let nav = UINavigationController(rootViewController: vc)
         
         nav.sheetPresentationController?.prefersGrabberVisible = true
