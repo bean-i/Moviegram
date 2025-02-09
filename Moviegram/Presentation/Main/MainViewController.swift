@@ -107,8 +107,8 @@ final class MainViewController: BaseViewController<MainView> {
     // 프로필뷰 터치 시, 프로필설정화면 sheet present
     @objc private func profileViewTapped() {
         let vc = ProfileSettingViewController()
-        vc.isEditMode = true
-        vc.delegate = self
+        vc.viewModel.inputEditMode.value = true
+        vc.viewModel.delegate = self
         let nav = UINavigationController(rootViewController: vc)
         
         nav.sheetPresentationController?.prefersGrabberVisible = true
