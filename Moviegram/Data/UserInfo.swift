@@ -15,6 +15,7 @@ enum UserInfoKey: String, CaseIterable {
     case joinDateKey = "joinDate"
     case storedMoviesKey = "storedMovies"
     case recentKeywordsKey = "recentKeywords"
+    case mbtiKey = "mbti"
 }
 
 // MARK: - UserInfo 싱글톤 패턴
@@ -98,6 +99,16 @@ final class UserInfo {
             
             UserDefaults.standard.set(newKeywords, forKey: UserInfoKey.recentKeywordsKey.rawValue)
             
+        }
+    }
+    
+    // MARK: - MBTI
+    var mbti: [String]? {
+        get {
+            UserDefaults.standard.stringArray(forKey: UserInfoKey.mbtiKey.rawValue) ?? []
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey:     UserInfoKey.mbtiKey.rawValue)
         }
     }
     
