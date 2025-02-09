@@ -7,6 +7,28 @@
 
 import Foundation
 
+// MARK: - 닉네임 조건 상태
+enum ConditionStatus {
+    case approve
+    case lengthLimit
+    case specialCharacterLimit
+    case numberLimit
+    
+    var description: String {
+        switch self {
+        case .approve:
+            return "사용할 수 있는 닉네임이에요"
+        case .lengthLimit:
+            return "2글자 이상 10글자 미만으로 설정해 주세요"
+        case .specialCharacterLimit:
+            return "닉네임에 @, #, $, % 는 포함할 수 없어요"
+        case .numberLimit:
+            return "닉네임에 숫자는 포함할 수 없어요"
+        }
+    }
+}
+
+// MARK: - 뷰모델
 final class ProfileSettingViewModel {
     
     var randomImageNumber = Int.random(in: 0...11)
