@@ -7,27 +7,6 @@
 
 import UIKit
 
-// MARK: - 닉네임 조건 상태
-enum ConditionStatus {
-    case approve
-    case lengthLimit
-    case specialCharacterLimit
-    case numberLimit
-    
-    var description: String {
-        switch self {
-        case .approve:
-            return "사용할 수 있는 닉네임이에요"
-        case .lengthLimit:
-            return "2글자 이상 10글자 미만으로 설정해 주세요"
-        case .specialCharacterLimit:
-            return "닉네임에 @, #, $, % 는 포함할 수 없어요"
-        case .numberLimit:
-            return "닉네임에 숫자는 포함할 수 없어요"
-        }
-    }
-}
-
 // MARK: - 프로필 설정 ViewController
 final class ProfileSettingViewController: BaseViewController<ProfileSettingView> {
     
@@ -35,54 +14,58 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     let viewModel = ProfileSettingViewModel()
     weak var delegate: PassMBTIDelegate?
     
+    deinit {
+        print("ProfileSettingViewController Deinit")
+    }
+    
     override func bindData() {
         // 타이틀
-        viewModel.outputEditModeText.bind { text in
-            self.title = text
+        viewModel.outputEditModeText.bind { [weak self] text in
+            self?.title = text
         }
         
         // editMode에 따라 뷰 다르게 보여주기
-        viewModel.outputEditMode.bind { bool in
-            self.configureSettingModeView()
+        viewModel.outputEditMode.bind { [weak self] bool in
+            self?.configureSettingModeView()
             if bool {
-                self.editModeNavigationBar()
-                self.configureEditModeView()
+                self?.editModeNavigationBar()
+                self?.configureEditModeView()
             }
         }
         
         // 닉네임 상태 레이블
-        viewModel.outputTextFieldText.bind { text in
-            self.mainView.nicknameConditionStatusLabel.text = text
+        viewModel.outputTextFieldText.bind { [weak self] text in
+            self?.mainView.nicknameConditionStatusLabel.text = text
         }
         
         // 닉네임 상태 레이블에 따른 변화
-        viewModel.outputApproveStatus.lazyBind { bool in
-            self.mainView.nicknameConditionStatusLabel.textColor = bool ? .point : .customRed
+        viewModel.outputApproveStatus.lazyBind { [weak self] bool in
+            self?.mainView.nicknameConditionStatusLabel.textColor = bool ? .point : .customRed
         }
         
-        viewModel.outputCompletionButtonEnabled.lazyBind { bool in
+        viewModel.outputCompletionButtonEnabled.lazyBind { [weak self] bool in
             print(bool)
-            self.mainView.completionButton.isEnabled = bool
-            self.navigationItem.rightBarButtonItem?.isEnabled = bool
-            self.mainView.completionButton.backgroundColor = bool ? .point : .darkGray
+            self?.mainView.completionButton.isEnabled = bool
+            self?.navigationItem.rightBarButtonItem?.isEnabled = bool
+            self?.mainView.completionButton.backgroundColor = bool ? .point : .darkGray
         }
         
         // 프로필 이미지 선택 -> 화면 전환
-        viewModel.outputProfileImageTapped.lazyBind { _ in
+        viewModel.outputProfileImageTapped.lazyBind { [weak self] _ in
             let vc = ProfileImageSettingViewController()
-            vc.viewModel.inputEditMode.value = self.viewModel.inputEditMode.value
-            vc.viewModel.outputSelectedImageNumber.value = self.viewModel.randomImageNumber
+            vc.viewModel.inputEditMode.value = self?.viewModel.inputEditMode.value ?? false
+            vc.viewModel.outputSelectedImageNumber.value = self?.viewModel.randomImageNumber ?? 0
             vc.viewModel.passSelectedImageNumber = { value in
-                self.viewModel.randomImageNumber = value
-                self.mainView.profileImageView.imageNumber = value
+                self?.viewModel.randomImageNumber = value
+                self?.mainView.profileImageView.imageNumber = value
             }
-            self.navigationController?.pushViewController(vc, animated: true)
+            self?.navigationController?.pushViewController(vc, animated: true)
         }
         
         // 저장 버튼 선택 이후 화면 전환
-        viewModel.outputCompletionButtonTapped.lazyBind { bool in
+        viewModel.outputCompletionButtonTapped.lazyBind { [weak self] bool in
             if bool {
-                self.dismiss(animated: true)
+                self?.dismiss(animated: true)
             } else {
                 guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                       let window = windowScene.windows.first else { return }
@@ -92,8 +75,8 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
         }
         
         // 취소 버튼 선택
-        viewModel.outputCancelButtonTapped.lazyBind { _ in
-            self.dismiss(animated: true)
+        viewModel.outputCancelButtonTapped.lazyBind { [weak self] _ in
+            self?.dismiss(animated: true)
         }
     }
     
@@ -187,11 +170,7 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
 
 extension ProfileSettingViewController: PassMBTIDelegate {
     
-    // 뷰모델에 선택된 mbti 넘겨주기
-    // 넘겨준 데이터가 있으면 삭제하고
-    // 넘겨준 데이터가 없으면 넣어주기!
     func passMBTI(data: String) {
-        print(#function)
         viewModel.inputMBTI.value = data
     }
     

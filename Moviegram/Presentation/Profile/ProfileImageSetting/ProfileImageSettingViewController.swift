@@ -19,22 +19,29 @@ final class ProfileImageSettingViewController: BaseViewController<ProfileImageSe
         viewModel.outputViewWillDisappearTrigger.value = ()
     }
     
+    deinit {
+        print("ProfileImageSettingViewController Deinit")
+    }
+    
     // MARK: - MVVM 추가
     override func bindData() {
         // 타이틀
-        viewModel.outputEditModeText.bind { text in
-            self.title = text
+        viewModel.outputEditModeText.bind { [weak self] text in
+            self?.title = text
         }
         
         // 상단 선택된 이미지
-        viewModel.outputSelectedImageNumber.bind { int in
-            self.mainView.profileImageView.imageNumber = int
-            self.mainView.profileImageView.isSelected = true
+        viewModel.outputSelectedImageNumber.bind { [weak self] int in
+            self?.mainView.profileImageView.imageNumber = int
+            self?.mainView.profileImageView.isSelected = true
         }
         
         // 화면 사라질 때, 역값전달
-        viewModel.outputViewWillDisappearTrigger.lazyBind { _ in
-            self.viewModel.passSelectedImageNumber?(self.viewModel.outputSelectedImageNumber.value)
+        viewModel.outputViewWillDisappearTrigger.lazyBind { [weak self] _ in
+            guard let value = self?.viewModel.outputSelectedImageNumber.value else {
+                return
+            }
+            self?.viewModel.passSelectedImageNumber?(value)
         }
     }
     
