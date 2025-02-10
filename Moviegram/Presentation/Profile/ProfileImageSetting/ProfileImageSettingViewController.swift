@@ -16,7 +16,7 @@ final class ProfileImageSettingViewController: BaseViewController<ProfileImageSe
     // MARK: - 생명주기
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        viewModel.outputViewWillDisappearTrigger.value = ()
+        viewModel.output.viewWillDisappearTrigger.value = ()
     }
     
     deinit {
@@ -26,19 +26,19 @@ final class ProfileImageSettingViewController: BaseViewController<ProfileImageSe
     // MARK: - MVVM 추가
     override func bindData() {
         // 타이틀
-        viewModel.outputEditModeText.bind { [weak self] text in
+        viewModel.output.editModeText.bind { [weak self] text in
             self?.title = text
         }
         
         // 상단 선택된 이미지
-        viewModel.outputSelectedImageNumber.bind { [weak self] int in
+        viewModel.output.selectedImageNumber.bind { [weak self] int in
             self?.mainView.profileImageView.imageNumber = int
             self?.mainView.profileImageView.isSelected = true
         }
         
         // 화면 사라질 때, 역값전달
-        viewModel.outputViewWillDisappearTrigger.lazyBind { [weak self] _ in
-            guard let value = self?.viewModel.outputSelectedImageNumber.value else {
+        viewModel.output.viewWillDisappearTrigger.lazyBind { [weak self] _ in
+            guard let value = self?.viewModel.output.selectedImageNumber.value else {
                 return
             }
             self?.viewModel.passSelectedImageNumber?(value)
@@ -67,7 +67,7 @@ extension ProfileImageSettingViewController: UICollectionViewDelegate, UICollect
         cell.isSelected = false
         cell.imageNumber = indexPath.item
         
-        if indexPath.item == viewModel.outputSelectedImageNumber.value {
+        if indexPath.item == viewModel.output.selectedImageNumber.value {
             cell.isSelected = true
             collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .init())
         }
@@ -76,8 +76,8 @@ extension ProfileImageSettingViewController: UICollectionViewDelegate, UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.outputSelectedImageNumber.value = indexPath.item
-        mainView.profileImageView.imageNumber = viewModel.outputSelectedImageNumber.value
+        viewModel.output.selectedImageNumber.value = indexPath.item
+        mainView.profileImageView.imageNumber = viewModel.output.selectedImageNumber.value
     }
 
 }
