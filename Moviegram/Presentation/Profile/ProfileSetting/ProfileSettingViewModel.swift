@@ -29,77 +29,66 @@ enum ConditionStatus {
 }
 
 // MARK: - 뷰모델
-final class ProfileSettingViewModel {
-    
+final class ProfileSettingViewModel: BaseViewModel {
+    // MARK: - Properties
     var randomImageNumber = Int.random(in: 0...11)
     let forbiddenStrings: [Character] = ["@", "#", "$", "%"]
+    var mbti: Set<String> = []
+    
     weak var delegate: PassUserInfoDelegate?
     
-    // 타이틀
-    var inputEditMode: Observable<Bool> = Observable(false)
-    var outputEditMode: Observable<Bool> = Observable(false)
-    var outputEditModeText: Observable<String> = Observable("nil")
-    
-    // 닉네임 텍스트필드
-    var inputTextFieldText: Observable<String?> = Observable(nil)
-    var outputTextFieldText: Observable<String> = Observable("")
-    var outputApproveStatus: Observable<Bool> = Observable(false)
-    
-    // 프로필 이미지 탭
-    var outputProfileImageTapped: Observable<Void?> = Observable(nil)
-    
-    // MBTI
-    var mbti: Set<String> = []
-    var inputMBTI: Observable<String> = Observable("")
-    
-    // 취소버튼 탭
-    var outputCancelButtonTapped: Observable<Void?> = Observable(nil)
-    
-    // 저장버튼 탭
-    var inputCompletionButtonTapped: Observable<Void?> = Observable(nil)
-    var outputCompletionButtonTapped: Observable<Bool> = Observable(false)
-    
-    var outputCompletionButtonEnabled: Observable<Bool> = Observable(false)
+    private(set) var input: Input
+    private(set) var output: Output
     
     init() {
+        input = Input()
+        output = Output()
         
-        inputEditMode.lazyBind { bool in
-            self.outputEditModeText.value = self.inputEditMode.value ? "프로필 편집" : "프로필 설정"
-            self.outputEditMode.value = bool
+        transform()
+    }
+    
+    func transform() {
+        input.editMode.lazyBind { [weak self] bool in
+        
+            guard let self else {
+                return
+            }
+            
+            self.output.editModeText.value = self.input.editMode.value ? "프로필 편집" : "프로필 설정"
+            self.output.editMode.value = bool
         }
         
-        inputTextFieldText.lazyBind { _ in
-            self.checkNicknameConditionStatus()
+        input.textFieldText.lazyBind { [weak self] _ in
+            self?.checkNicknameConditionStatus()
         }
         
-        inputCompletionButtonTapped.lazyBind { _ in
-            self.saveUserInfo()
+        input.completionButtonTapped.lazyBind { [weak self] _ in
+            self?.saveUserInfo()
         }
         
-        inputMBTI.lazyBind { _ in
-            self.setMBTI()
+        input.mbti.lazyBind { [weak self] _ in
+            self?.setMBTI()
         }
-        
     }
     
     private func checkNicknameConditionStatus() {
-        guard let text = inputTextFieldText.value else {
+        guard let text = input.textFieldText.value else {
             print("텍스트필드 오류")
             return
         }
 
         for str in text {
-            outputApproveStatus.value = false
+            output.approveStatus.value = false
             // 특수문자 검사
             if forbiddenStrings.contains(String(str)) {
-                outputTextFieldText.value = ConditionStatus.specialCharacterLimit.description
+                output.textFieldText.value = ConditionStatus.specialCharacterLimit.description
                 checkCompletion()
                 return
             }
             
             // 숫자 검사
             if let _ = Int(String(str)) {
-                outputTextFieldText.value = ConditionStatus.numberLimit.description
+                output.textFieldText.value = ConditionStatus.numberLimit.description
                 checkCompletion()
                 return
             }
@@ -108,17 +97,17 @@ final class ProfileSettingViewModel {
         // 특수문자, 숫자 검사 통과하면
         // 길이 검사
         if text.count >= 2 && text.count < 10 {
-            outputTextFieldText.value = ConditionStatus.approve.description
-            outputApproveStatus.value = true
+            output.textFieldText.value = ConditionStatus.approve.description
+            output.approveStatus.value = true
         } else {
-            outputTextFieldText.value = ConditionStatus.lengthLimit.description
+            output.textFieldText.value = ConditionStatus.lengthLimit.description
         }
         checkCompletion()
     }
 
     private func saveUserInfo() {
         
-        guard let nickname = inputTextFieldText.value else {
+        guard let nickname = input.textFieldText.value else {
             print("텍스트필드 오류")
             return
         }
@@ -127,21 +116,21 @@ final class ProfileSettingViewModel {
         UserInfo.shared.nickname = nickname
         UserInfo.shared.mbti = Array(mbti)
         
-        if inputEditMode.value {
+        if input.editMode.value {
             delegate?.passUserInfo()
-            outputCompletionButtonTapped.value = inputEditMode.value
+            output.completionButtonTapped.value = input.editMode.value
         } else {
             UserInfo.shared.joinDate = DateFormatter.stringFromDate(Date())
             UserInfo.shared.storedMovies = []
             UserInfo.shared.isRegistered = true
-            outputCompletionButtonTapped.value = inputEditMode.value
+            output.completionButtonTapped.value = input.editMode.value
         }
     }
     
     // MBTI 컬렉션뷰의 데이터 저장
     // 데이터 있으면 삭제, 없으면 추가
     private func setMBTI() {
-        let data = inputMBTI.value
+        let data = input.mbti.value
         if mbti.contains(data) {
             mbti.remove(data)
         } else {
@@ -154,13 +143,51 @@ final class ProfileSettingViewModel {
     private func checkCompletion() {
         print(#function)
         print(mbti)
-        if outputTextFieldText.value == ConditionStatus.approve.description,
+        if output.textFieldText.value == ConditionStatus.approve.description,
            mbti.count == 4 {
             print("저장 가능")
-            outputCompletionButtonEnabled.value = true
+            output.completionButtonEnabled.value = true
         } else {
             print("저장 불가능")
-            outputCompletionButtonEnabled.value = false
+            output.completionButtonEnabled.value = false
         }
+    }
+}
+
+// MARK: - Input Output
+extension ProfileSettingViewModel {
+    
+    struct Input {
+        // 타이틀
+        var editMode: Observable<Bool> = Observable(false)
+        
+        // 닉네임 텍스트필드
+        var textFieldText: Observable<String?> = Observable(nil)
+        
+        // MBTI
+        var mbti: Observable<String> = Observable("")
+        
+        // 저장버튼 탭
+        var completionButtonTapped: Observable<Void?> = Observable(nil)
+    }
+    
+    struct Output {
+        // 타이틀
+        var editMode: Observable<Bool> = Observable(false)
+        var editModeText: Observable<String> = Observable("nil")
+        
+        // 닉네임 텍스트필드
+        var textFieldText: Observable<String> = Observable("")
+        var approveStatus: Observable<Bool> = Observable(false)
+        
+        // 취소버튼 탭
+        var cancelButtonTapped: Observable<Void?> = Observable(nil)
+        
+        // 프로필 이미지 탭
+        var profileImageTapped: Observable<Void?> = Observable(nil)
+        
+        // 저장버튼 탭
+        var completionButtonTapped: Observable<Bool> = Observable(false)
+        var completionButtonEnabled: Observable<Bool> = Observable(false)
     }
 }

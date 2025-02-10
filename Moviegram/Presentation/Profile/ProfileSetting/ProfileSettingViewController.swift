@@ -20,12 +20,12 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     
     override func bindData() {
         // 타이틀
-        viewModel.outputEditModeText.bind { [weak self] text in
+        viewModel.output.editModeText.bind { [weak self] text in
             self?.title = text
         }
         
         // editMode에 따라 뷰 다르게 보여주기
-        viewModel.outputEditMode.bind { [weak self] bool in
+        viewModel.output.editMode.bind { [weak self] bool in
             self?.configureSettingModeView()
             if bool {
                 self?.editModeNavigationBar()
@@ -34,27 +34,26 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
         }
         
         // 닉네임 상태 레이블
-        viewModel.outputTextFieldText.bind { [weak self] text in
+        viewModel.output.textFieldText.bind { [weak self] text in
             self?.mainView.nicknameConditionStatusLabel.text = text
         }
         
         // 닉네임 상태 레이블에 따른 변화
-        viewModel.outputApproveStatus.lazyBind { [weak self] bool in
+        viewModel.output.approveStatus.lazyBind { [weak self] bool in
             self?.mainView.nicknameConditionStatusLabel.textColor = bool ? .point : .customRed
         }
         
-        viewModel.outputCompletionButtonEnabled.lazyBind { [weak self] bool in
-            print(bool)
+        viewModel.output.completionButtonEnabled.lazyBind { [weak self] bool in
             self?.mainView.completionButton.isEnabled = bool
             self?.navigationItem.rightBarButtonItem?.isEnabled = bool
             self?.mainView.completionButton.backgroundColor = bool ? .point : .darkGray
         }
         
         // 프로필 이미지 선택 -> 화면 전환
-        viewModel.outputProfileImageTapped.lazyBind { [weak self] _ in
+        viewModel.output.profileImageTapped.lazyBind { [weak self] _ in
             let vc = ProfileImageSettingViewController()
-            vc.viewModel.inputEditMode.value = self?.viewModel.inputEditMode.value ?? false
-            vc.viewModel.outputSelectedImageNumber.value = self?.viewModel.randomImageNumber ?? 0
+            vc.viewModel.input.editMode.value = self?.viewModel.input.editMode.value ?? false
+            vc.viewModel.output.selectedImageNumber.value = self?.viewModel.randomImageNumber ?? 0
             vc.viewModel.passSelectedImageNumber = { value in
                 self?.viewModel.randomImageNumber = value
                 self?.mainView.profileImageView.imageNumber = value
@@ -63,7 +62,7 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
         }
         
         // 저장 버튼 선택 이후 화면 전환
-        viewModel.outputCompletionButtonTapped.lazyBind { [weak self] bool in
+        viewModel.output.completionButtonTapped.lazyBind { [weak self] bool in
             if bool {
                 self?.dismiss(animated: true)
             } else {
@@ -75,7 +74,7 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
         }
         
         // 취소 버튼 선택
-        viewModel.outputCancelButtonTapped.lazyBind { [weak self] _ in
+        viewModel.output.cancelButtonTapped.lazyBind { [weak self] _ in
             self?.dismiss(animated: true)
         }
     }
@@ -109,7 +108,7 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
             mainView.profileImageView.imageNumber = userImageNumber
             mainView.nicknameTextField.text = userNickname
             viewModel.randomImageNumber = userImageNumber
-            viewModel.inputTextFieldText.value = userNickname
+            viewModel.input.textFieldText.value = userNickname
             
             // 네개의 컬렉션뷰에 mbti 표시하기
             for currentView in mainView.mbtiCollectionViews {
@@ -125,7 +124,7 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     }
     
     private func configureSettingModeView() {
-        mainView.completionButton.isHidden = viewModel.inputEditMode.value
+        mainView.completionButton.isHidden = viewModel.input.editMode.value
         mainView.profileImageView.imageNumber = viewModel.randomImageNumber
     }
     
@@ -148,22 +147,22 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     
     @objc func profileImageTapped() {
         // 프로필 이미지 설정 화면으로 전환
-        viewModel.outputProfileImageTapped.value = ()
+        viewModel.output.profileImageTapped.value = ()
     }
     
     @objc func cancelButtonTapped() {
-        viewModel.outputCancelButtonTapped.value = ()
+        viewModel.output.cancelButtonTapped.value = ()
     }
     
     // MARK: - Methods - 닉네임 설정
     @objc func textFieldDidChange(_ textField: UITextField) {
         // 텍스트필드의 텍스트 값 넘겨주기
-        viewModel.inputTextFieldText.value = textField.text
+        viewModel.input.textFieldText.value = textField.text
     }
     
     @objc func completionButtonTapped() {
         // 유저 정보 저장
-        viewModel.inputCompletionButtonTapped.value = ()
+        viewModel.input.completionButtonTapped.value = ()
     }
     
 }
@@ -171,7 +170,7 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
 extension ProfileSettingViewController: PassMBTIDelegate {
     
     func passMBTI(data: String) {
-        viewModel.inputMBTI.value = data
+        viewModel.input.mbti.value = data
     }
     
 }
