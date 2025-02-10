@@ -148,6 +148,7 @@ final class MovieDetailView: BaseView {
         synopsisLabel.text = "Synopsis"
         synopsisLabel.textColor = .white
         synopsisLabel.font = .Font.large.of(weight: .bold)
+        synopsisDetailLabel.numberOfLines = 3
         
         synopsisDetailLabel.textColor = .white
         synopsisDetailLabel.font = .Font.medium.of(weight: .medium)
@@ -193,19 +194,27 @@ final class MovieDetailView: BaseView {
         genreView.configureData(image: "film.fill", text: genre)
         
         // 줄거리 길이에 따라, seeMoreButton 조정
-        let textWidth = data.overview?.calculateTextWidth(font: .Font.medium.of(weight: .medium)) ?? 0
-        let deviceWidth = UIScreen.main.bounds.width
+//        let textWidth = data.overview?.calculateTextWidth(font: .Font.medium.of(weight: .medium)) ?? 0
+//        let deviceWidth = UIScreen.main.bounds.width
+//
+//        if (textWidth / deviceWidth) >= 3 {
+//            seeMoreButton.isHidden = false
+//        } else {
+//            seeMoreButton.isHidden = true
+//        }
 
-        if (textWidth / deviceWidth) >= 3 {
+        synopsisDetailLabel.text = data.overview
+        
+        let line = synopsisDetailLabel.calculateNumberOfLines()
+        if line > 4 {
             seeMoreButton.isHidden = false
         } else {
             seeMoreButton.isHidden = true
         }
-
-        synopsisDetailLabel.text = data.overview
-        synopsisDetailLabel.font = .Font.medium.of(weight: .medium)
-        synopsisDetailLabel.numberOfLines = 3
+        print("줄거리 line수", synopsisDetailLabel.calculateNumberOfLines())
+        
     }
+    
     
     // MARK: - CollectionView Layout
     private func backdropCollectionViewLayout() -> UICollectionViewLayout {
