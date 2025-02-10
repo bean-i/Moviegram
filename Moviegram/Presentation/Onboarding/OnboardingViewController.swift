@@ -20,7 +20,7 @@ final class OnboardingViewController: BaseViewController<OnboardingView> {
 
     @objc private func startButtonTapped() {
         let vc = ProfileSettingViewController()
-        vc.viewModel.inputEditMode.value = false
+        vc.viewModel.input.editMode.value = false
         navigationController?.pushViewController(vc, animated: true)
     }
     
