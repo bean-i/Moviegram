@@ -11,40 +11,94 @@ import UIKit
 final class MainViewController: BaseViewController<MainView> {
     
     // MARK: - Properties
-    // 오늘의 영화 데이터
-    private var todayMovies: [MovieModel] = [] {
-        didSet {
-            mainView.todayMovieCollectionView.reloadData()
-        }
-    }
-    
-    // 최근 검색 키워드
-    private var recentKeywords: [String] = []
+    let viewModel = MainViewModel()
     
     // MARK: - 생명주기
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        mainView.profileView.configureData(data: UserInfo.shared) // 프로필뷰 업데이트
-        mainView.todayMovieCollectionView.reloadData() // 오늘의 영화 컬렉션뷰 업데이트
-        recentKeywords = UserInfo.shared.recentKeywords?.reversed() ?? [] // 최근 검색어 업데이트
-        mainView.recentKeywordCollectionView.reloadData()
-        
-        // 최근 검색어 있으면, 컬렉션뷰 보여주고, 없으면 레이블 보여주기
-        updateRecentKeywordView()
+        viewModel.output.viewWillAppearTrigger.value = ()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // 오늘의 영화 데이터 불러오기
-        NetworkManager.shared.getMovieData(api: .TodayMovie,
-                                           type: TodayMovieModel.self) { value in
-            self.todayMovies = value.results
-        } failHandler: { statusCode in
-            self.showErrorAlert(error: statusCode)
+        viewModel.input.viewDidLoadTrigger.value = ()
+    }
+    
+    override func bindData() {
+        // viewWillAppear 데이터 업데이트 -> 로직 수정 필요.
+        viewModel.output.viewWillAppearTrigger.lazyBind { [weak self] _ in
+            self?.mainView.profileView.configureData(data: UserInfo.shared) // 프로필뷰 업데이트
+            self?.mainView.todayMovieCollectionView.reloadData() // 오늘의 영화 컬렉션뷰 업데이트
+            self?.viewModel.input.recentKeywords.value = UserInfo.shared.recentKeywords?.reversed() ?? [] // 최근 검색어 업데이트
+            self?.mainView.recentKeywordCollectionView.reloadData()
         }
-
+        
+        // 오늘의 영화 (통신 성공 -> 컬렉션뷰 업데이트)
+        viewModel.output.todayMovies.lazyBind { [weak self] _ in
+            self?.mainView.todayMovieCollectionView.reloadData()
+        }
+        
+        // alert (통신 실패 -> 오류 alert)
+        viewModel.output.configureError.lazyBind { [weak self] error in
+            guard let error else {
+                print("error nil")
+                return
+            }
+            self?.showErrorAlert(error: error)
+        }
+        
+        // 최근 검색어 개수에 따른 컬렉션 뷰 or 레이블 보이기
+        viewModel.output.recentKeywordView.bind { [weak self] bool in
+            print(bool)
+            self?.mainView.recentKeywordCollectionView.isHidden = bool
+            self?.mainView.noRecentSearchLabel.isHidden = !bool
+        }
+        
+        // 검색 버튼 탭 - 화면 전환
+        viewModel.output.searchTapped.lazyBind { [weak self] index in
+            guard let self else {
+                print("self 오류")
+                return
+            }
+            
+            let vc = SearchViewController()
+            if let index {
+                vc.currentKeyword = viewModel.input.recentKeywords.value[index]
+                vc.mainView.searchBar.text = viewModel.input.recentKeywords.value[index]
+                vc.mainView.searchBar.resignFirstResponder() // 키워드 터치 -> 상세화면 전환될 때, 키보드 올리지 않기
+                vc.getData()
+            }
+            navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        // 프로필뷰 탭 - 화면 전환
+        viewModel.output.profileViewTapped.lazyBind { [weak self] _ in
+            let vc = ProfileSettingViewController()
+            vc.viewModel.input.editMode.value = true
+            vc.viewModel.delegate = self
+            let nav = UINavigationController(rootViewController: vc)
+            
+            nav.sheetPresentationController?.prefersGrabberVisible = true
+            
+            self?.present(nav, animated: true)
+        }
+        
+        // 최근 검색어 테이블뷰 업데이트
+        viewModel.output.recentKeywordsChanged.lazyBind { [weak self] _ in
+            self?.mainView.recentKeywordCollectionView.reloadData()
+        }
+        
+        // 영화 상세 화면 전환
+        viewModel.output.movieTapped.lazyBind { [weak self] index in
+            guard let self,
+                  let index else {
+                print("self, index 오류")
+                return
+            }
+            let vc = MovieDetailViewController()
+            vc.movieInfo = viewModel.output.todayMovies.value[index]
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     // MARK: - Configure
@@ -79,41 +133,19 @@ final class MainViewController: BaseViewController<MainView> {
     }
     
     // MARK: - Methods
-    // 최근 검색어 개수에 따라, 컬렉션뷰 or 레이블 보여주기
-    private func updateRecentKeywordView() {
-        if recentKeywords.count > 0 {
-            mainView.recentKeywordCollectionView.isHidden = false
-            mainView.noRecentSearchLabel.isHidden = true
-        } else {
-            mainView.recentKeywordCollectionView.isHidden = true
-            mainView.noRecentSearchLabel.isHidden = false
-        }
-    }
-    
     // "전체 삭제" 버튼 터치 시, userdefaults에 저장 된 정보 삭제
     @objc private func deleteAllSearchKeywordButtonTapped() {
-        UserDefaults.standard.removeObject(forKey: UserInfoKey.recentKeywordsKey.rawValue)
-        recentKeywords = []
-        // UI 업데이트
-        updateRecentKeywordView()
+        viewModel.input.deleteAllKeywordTapped.value = ()
     }
     
     // 네비게이션아이템의 검색 버튼 터치 시, 검색 화면으로 전환
     @objc private func searchButtonTapped() {
-        let vc = SearchViewController()
-        navigationController?.pushViewController(vc, animated: true)
+        viewModel.output.searchTapped.value = nil
     }
     
     // 프로필뷰 터치 시, 프로필설정화면 sheet present
     @objc private func profileViewTapped() {
-        let vc = ProfileSettingViewController()
-        vc.viewModel.input.editMode.value = true
-        vc.viewModel.delegate = self
-        let nav = UINavigationController(rootViewController: vc)
-        
-        nav.sheetPresentationController?.prefersGrabberVisible = true
-        
-        present(nav, animated: true)
+        viewModel.output.profileViewTapped.value = ()
     }
 
 }
@@ -125,9 +157,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         switch collectionView {
         case mainView.recentKeywordCollectionView:
-            return recentKeywords.count
+            return viewModel.input.recentKeywords.value.count
         case mainView.todayMovieCollectionView:
-            return todayMovies.count
+            return viewModel.output.todayMovies.value.count
         default:
             return 0
         }
@@ -144,7 +176,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             }
             cell.delegate = self
             cell.index = indexPath.item
-            cell.configureData(text: recentKeywords[indexPath.item])
+            cell.configureData(text: viewModel.input.recentKeywords.value[indexPath.item])
             return cell
             
         case mainView.todayMovieCollectionView:
@@ -153,7 +185,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
                 return UICollectionViewCell()
             }
             cell.movieLikeButton.delegate = self
-            cell.configureData(data: todayMovies[indexPath.item])
+            cell.configureData(data: viewModel.output.todayMovies.value[indexPath.item])
             return cell
             
         default:
@@ -167,10 +199,10 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         switch collectionView{
         case mainView.recentKeywordCollectionView:
-            let text = recentKeywords[indexPath.item]
-            let attributes = [NSAttributedString.Key.font: UIFont.Font.medium.of(weight: .medium)]
-            let textSize = (text as NSString).size(withAttributes: attributes as [NSAttributedString.Key: Any])
-            return CGSize(width: textSize.width + 40, height: 30)
+            return CGSize(
+                width: viewModel.getTextWidth(index: indexPath.item) + 40,
+                height: 30
+            )
             
         case mainView.todayMovieCollectionView:
             return CGSize(width: 210, height: 380)
@@ -186,19 +218,12 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch collectionView {
         case mainView.recentKeywordCollectionView:
             // 검색 결과 화면 전환
-            let vc = SearchViewController()
-            vc.currentKeyword = recentKeywords[indexPath.item]
-            vc.mainView.searchBar.text = recentKeywords[indexPath.item]
-            vc.mainView.searchBar.resignFirstResponder() // 키워드 터치 -> 상세화면 전환될 때, 키보드 올리지 않기
-            vc.getData()
-            navigationController?.pushViewController(vc, animated: true)
+            viewModel.output.searchTapped.value = indexPath.item
             
         case mainView.todayMovieCollectionView:
             // 영화 상세 화면 전환
-            let vc = MovieDetailViewController()
-            vc.movieInfo = todayMovies[indexPath.item]
-            navigationController?.pushViewController(vc, animated: true)
-        
+            viewModel.output.movieTapped.value = indexPath.item
+
         default:
             return
         }
@@ -217,10 +242,6 @@ extension MainViewController: PassUserInfoDelegate {
 
 extension MainViewController: DeleteKeywordDelegate {
     func deleteKeyword(index: Int) { // 키워드 삭제
-        var keywords = recentKeywords
-        keywords.remove(at: index)
-        UserDefaults.standard.set(keywords, forKey: UserInfoKey.recentKeywordsKey.rawValue)
-        recentKeywords = UserInfo.shared.recentKeywords ?? []
-        mainView.recentKeywordCollectionView.reloadData()
+        viewModel.input.deleteKeywordTapped.value = index
     }
 }
