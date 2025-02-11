@@ -77,7 +77,7 @@ final class MainViewModel: BaseViewModel {
         
         // 최근 검색어 전체 삭제
         input.deleteAllKeywordTapped.lazyBind { [weak self] _ in
-            self?.updateRecentKeywordView()
+            self?.deleteAllKeywords()
         }
         
         // 최근 검색어 하나 삭제
