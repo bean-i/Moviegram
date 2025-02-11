@@ -36,7 +36,10 @@ final class MainViewModel: BaseViewModel {
         let recentKeywordView: Observable<Bool> = Observable(false)
         
         // 네비게이션바 - 검색 버튼 탭
-        let searchTapped: Observable<Int?> = Observable(nil)
+        let searchTapped: Observable<Void> = Observable(())
+        
+        // 최근 검색 키워드 영역 - 버튼 탭
+        let recentKeywordTapped: Observable<Int?> = Observable(nil)
         
         // 프로필뷰 탭 - 화면 전환
         let profileViewTapped: Observable<Void> = Observable(())

@@ -54,20 +54,27 @@ final class MainViewController: BaseViewController<MainView> {
             self?.mainView.noRecentSearchLabel.isHidden = !bool
         }
         
-        // 검색 버튼 탭 - 화면 전환
-        viewModel.output.searchTapped.lazyBind { [weak self] index in
+        // 네비게이션바 - 검색 버튼 탭
+        viewModel.output.searchTapped.lazyBind { [weak self] _ in
             guard let self else {
                 print("self 오류")
                 return
             }
             
             let vc = SearchViewController()
-            if let index {
-                vc.currentKeyword = viewModel.input.recentKeywords.value[index]
-                vc.mainView.searchBar.text = viewModel.input.recentKeywords.value[index]
-                vc.mainView.searchBar.resignFirstResponder() // 키워드 터치 -> 상세화면 전환될 때, 키보드 올리지 않기
-                vc.getData()
+            navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        // 최근 검색 키워드 영역 - 버튼 탭
+        viewModel.output.recentKeywordTapped.lazyBind { [weak self] index in
+            guard let self,
+                  let index else {
+                print("self, index 오류")
+                return
             }
+            
+            let vc = SearchViewController()
+            vc.viewModel.input.recentKeywordTapped.value = viewModel.input.recentKeywords.value[index]
             navigationController?.pushViewController(vc, animated: true)
         }
         
@@ -140,7 +147,7 @@ final class MainViewController: BaseViewController<MainView> {
     
     // 네비게이션아이템의 검색 버튼 터치 시, 검색 화면으로 전환
     @objc private func searchButtonTapped() {
-        viewModel.output.searchTapped.value = nil
+        viewModel.output.searchTapped.value = ()
     }
     
     // 프로필뷰 터치 시, 프로필설정화면 sheet present
@@ -218,7 +225,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch collectionView {
         case mainView.recentKeywordCollectionView:
             // 검색 결과 화면 전환
-            viewModel.output.searchTapped.value = indexPath.item
+            viewModel.output.recentKeywordTapped.value = indexPath.item
             
         case mainView.todayMovieCollectionView:
             // 영화 상세 화면 전환

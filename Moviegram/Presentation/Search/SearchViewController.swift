@@ -11,22 +11,80 @@ import UIKit
 final class SearchViewController: BaseViewController<SearchView> {
     
     // MARK: - Properties
-    private var searchMovies: [MovieModel] = []
-    
-    var currentKeyword = ""
-    private var currentPage = 1
-    private var totalPage = 1
+    let viewModel = SearchViewModel()
     
     // MARK: - 생명주기
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // 좋아요 업데이트
-        mainView.searchTableView.reloadData()
+        viewModel.output.viewWillAppearTrigger.value = ()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        viewModel.output.viewDidLoadTrigger.value = ()
     }
 
     // MARK: - Configure
-    override func configureView() {
-        title = "영화 검색"
+    override func bindData() {
+        // viewWillAppear
+        viewModel.output.viewWillAppearTrigger.lazyBind { [weak self] _ in
+            // 좋아요 업데이트
+            self?.mainView.searchTableView.reloadData()
+        }
+        
+        // viewDidLoad
+        viewModel.output.viewDidLoadTrigger.lazyBind { [weak self] _ in
+            self?.title = "영화 검색"
+            self?.mainView.searchBar.becomeFirstResponder()
+            self?.dismissKeyboardWhenTapped()
+        }
+        
+        // 키보드 내리기
+        viewModel.output.resignKeyboard.bind { [weak self] _ in
+            self?.mainView.searchBar.resignFirstResponder()
+        }
+        
+        // 상단 스크롤
+        viewModel.output.scrollToTop.lazyBind { [weak self] _ in
+            self?.mainView.searchTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+        }
+        
+        // 검색 결과 데이터
+        viewModel.output.searchMovies.lazyBind { [weak self] _ in
+            self?.mainView.searchTableView.reloadData()
+        }
+        
+        // 검색 결과 개수에 따른 UI
+        viewModel.output.searchDataView.lazyBind { [weak self] bool in
+            self?.mainView.searchResultLabel.isHidden = bool
+            self?.mainView.searchTableView.isHidden = !bool
+        }
+        
+        // alert (통신 실패 -> 오류 alert)
+        viewModel.output.configureError.lazyBind { [weak self] error in
+            guard let error else {
+                print("error nil")
+                return
+            }
+            self?.showErrorAlert(error: error)
+        }
+        
+        // 영화 상세 화면 전환
+        viewModel.output.movieTapped.lazyBind { [weak self] index in
+            guard let self,
+                  let index else {
+                print("self, index 오류")
+                return
+            }
+            let vc = MovieDetailViewController()
+            vc.movieInfo = viewModel.output.searchMovies.value[index]
+            navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        // 최근 검색어 영역에서 들어온 경우, 서치바에 텍스트 표시하기
+        viewModel.output.searchBarText.bind { [weak self] _ in
+            self?.mainView.searchBar.text = self?.viewModel.input.recentKeywordTapped.value ?? "검색어 없음"
+        }
     }
     
     override func configureDelegate() {
@@ -37,74 +95,13 @@ final class SearchViewController: BaseViewController<SearchView> {
         mainView.searchTableView.prefetchDataSource = self
         mainView.searchTableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.identifier)
     }
-    
-    override func configureGesture() {
-        mainView.searchBar.becomeFirstResponder()
-        dismissKeyboardWhenTapped()
-    }
-    
-    // MARK: - Methods
-    func getData() {
-        NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: currentKeyword, page: String(currentPage)),
-                                           type: MovieSearchModel.self) { value in
-            print(value.totalResults)
-            // 검색 결과가 없으면 테이블뷰 X, 레이블 O
-            if value.totalResults == 0 {
-                self.mainView.searchResultLabel.isHidden = false
-                self.mainView.searchTableView.isHidden = true
-            } else {// 검색 결과가 있으면 테이블뷰 O, 레이블 X
-                self.mainView.searchResultLabel.isHidden = true
-                self.mainView.searchTableView.isHidden = false
-                self.currentPage = value.page
-                self.totalPage = value.totalPages
-                self.searchMovies = value.results
-                self.mainView.searchTableView.reloadData()
-                
-                if self.currentPage == 1 {
-                    self.mainView.searchTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-                }
-            }
-            
-        } failHandler: { statusCode in
-            self.showErrorAlert(error: statusCode)
-        }
-    }
-    
-    private func initData() {
-        currentPage = 1
-        totalPage = 1
-    }
 
 }
 
 // MARK: - Extension: SearchBar
 extension SearchViewController: UISearchBarDelegate {
-    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-
-        guard let text = mainView.searchBar.text else {
-            print("검색 오류")
-            return
-        }
-        // 검색 후, 키보드 내리기
-        mainView.searchBar.resignFirstResponder()
-        
-        initData()
-        
-        // 바로 전과 같은 검색어를 입력했으면, 네트워크 통신X
-        if text == currentKeyword {
-            // 스크롤 상단으로 올려주기
-            mainView.searchTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
-        } else {
-            // userdefaults의 최근 검색어에 저장
-            UserInfo.shared.recentKeywords = [text]
-            
-            currentKeyword = text
-            // 네트워크 통신
-            getData()
-        }
-        
-        
+        viewModel.input.searchButtonTapped.value = mainView.searchBar.text
     }
 }
 
@@ -112,7 +109,7 @@ extension SearchViewController: UISearchBarDelegate {
 extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchMovies.count
+        return viewModel.output.searchMovies.value.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -125,36 +122,20 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         cell.movieLikeButton.delegate = self
-        cell.configureData(data: searchMovies[indexPath.row])
+        cell.configureData(data: viewModel.output.searchMovies.value[indexPath.row])
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 영화 상세 화면
-        let vc = MovieDetailViewController()
-        vc.movieInfo = searchMovies[indexPath.row]
-        navigationController?.pushViewController(vc, animated: true)
+        viewModel.output.movieTapped.value = indexPath.item
     }
     
 }
 
 // MARK: - Extension: Prefetch
 extension SearchViewController: UITableViewDataSourcePrefetching {
-    
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        for indexPath in indexPaths {
-            if indexPath.row == searchMovies.count - 2,
-               currentPage < totalPage {
-                currentPage += 1
-                
-                NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: currentKeyword, page: String(currentPage)), type: MovieSearchModel.self) { value in
-                    self.searchMovies.append(contentsOf: value.results)
-                    self.mainView.searchTableView.reloadData()
-                } failHandler: { statusCode in
-                    self.currentPage -= 1
-                    self.showErrorAlert(error: statusCode)
-                }
-            }
-        }
+        viewModel.input.prefetchData.value = indexPaths
     }
 }
