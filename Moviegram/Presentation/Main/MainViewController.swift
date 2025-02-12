@@ -24,6 +24,10 @@ final class MainViewController: BaseViewController<MainView> {
         viewModel.input.viewDidLoadTrigger.value = ()
     }
     
+    deinit {
+        print("MainViewController Deinit")
+    }
+    
     override func bindData() {
         // viewWillAppear 데이터 업데이트 -> 로직 수정 필요.
         viewModel.output.viewWillAppearTrigger.lazyBind { [weak self] _ in

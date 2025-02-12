@@ -23,6 +23,10 @@ final class SearchViewController: BaseViewController<SearchView> {
         super.viewDidLoad()
         viewModel.output.viewDidLoadTrigger.value = ()
     }
+    
+    deinit {
+        print("SearchViewController Deinit")
+    }
 
     // MARK: - Configure
     override func bindData() {
