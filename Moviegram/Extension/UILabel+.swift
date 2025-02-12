@@ -27,9 +27,6 @@ extension UILabel {
             context: nil
         )
         
-        print("Label Size: ", labelSize)
-        print("Font Height", font.lineHeight)
-        
         return Int(ceil(CGFloat(labelSize.height) / font.lineHeight))
     }
     

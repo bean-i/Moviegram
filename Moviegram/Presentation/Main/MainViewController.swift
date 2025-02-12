@@ -53,7 +53,6 @@ final class MainViewController: BaseViewController<MainView> {
         
         // 최근 검색어 개수에 따른 컬렉션 뷰 or 레이블 보이기
         viewModel.output.recentKeywordView.lazyBind { [weak self] bool in
-            print(bool)
             self?.mainView.recentKeywordCollectionView.isHidden = bool
             self?.mainView.noRecentSearchLabel.isHidden = !bool
         }

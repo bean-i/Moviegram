@@ -192,16 +192,6 @@ final class MovieDetailView: BaseView {
         releaseView.configureData(image: "calendar", text: date ?? "")
         rateView.configureData(image: "star.fill", text: String(format: "%.1f", rate ?? 0))
         genreView.configureData(image: "film.fill", text: genre)
-        
-        // 줄거리 길이에 따라, seeMoreButton 조정
-//        let textWidth = data.overview?.calculateTextWidth(font: .Font.medium.of(weight: .medium)) ?? 0
-//        let deviceWidth = UIScreen.main.bounds.width
-//
-//        if (textWidth / deviceWidth) >= 3 {
-//            seeMoreButton.isHidden = false
-//        } else {
-//            seeMoreButton.isHidden = true
-//        }
 
         synopsisDetailLabel.text = data.overview
         
@@ -211,7 +201,6 @@ final class MovieDetailView: BaseView {
         } else {
             seeMoreButton.isHidden = true
         }
-        print("줄거리 line수", synopsisDetailLabel.calculateNumberOfLines())
         
     }
     

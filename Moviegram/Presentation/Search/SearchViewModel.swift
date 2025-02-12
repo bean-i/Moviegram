@@ -104,11 +104,6 @@ final class SearchViewModel: BaseViewModel {
     }
     
     private func recentKeywordSearch() {
-        
-//        guard let text = input.recentKeywordTapped.value else {
-//            print("최근 검색어 오류")
-//            return
-//        }
         let text = input.recentKeywordTapped.value
         currentKeyword = text
         output.searchBarText.value = ()
@@ -117,7 +112,7 @@ final class SearchViewModel: BaseViewModel {
     
     private func fetchData() {
         NetworkManager.shared.getMovieData(api: .MovieSearch(keyword: currentKeyword, page: String(currentPage)), type: MovieSearchModel.self) { [weak self] value in
-            
+            self?.output.resignKeyboard.value = () // 키보드 내리기
             if value.totalResults == 0 {
                 self?.output.searchDataView.value = false
             } else {
