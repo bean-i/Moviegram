@@ -69,7 +69,7 @@ final class MainViewModel: BaseViewModel {
         }
         
         // 최근 검색어 데이터 업데이트
-        input.recentKeywords.bind { [weak self] _ in
+        input.recentKeywords.lazyBind { [weak self] _ in
             self?.updateRecentKeywordView()
             // 테이블뷰 업데이트
             self?.output.recentKeywordsChanged.value = ()

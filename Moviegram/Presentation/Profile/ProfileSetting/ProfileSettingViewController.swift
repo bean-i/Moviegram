@@ -20,12 +20,12 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
     
     override func bindData() {
         // 타이틀
-        viewModel.output.editModeText.bind { [weak self] text in
+        viewModel.output.editModeText.lazyBind { [weak self] text in
             self?.title = text
         }
         
         // editMode에 따라 뷰 다르게 보여주기
-        viewModel.output.editMode.bind { [weak self] bool in
+        viewModel.output.editMode.lazyBind { [weak self] bool in
             self?.configureSettingModeView()
             if bool {
                 self?.editModeNavigationBar()
@@ -34,7 +34,7 @@ final class ProfileSettingViewController: BaseViewController<ProfileSettingView>
         }
         
         // 닉네임 상태 레이블
-        viewModel.output.textFieldText.bind { [weak self] text in
+        viewModel.output.textFieldText.lazyBind { [weak self] text in
             self?.mainView.nicknameConditionStatusLabel.text = text
         }
         

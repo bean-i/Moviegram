@@ -44,7 +44,7 @@ final class SearchViewController: BaseViewController<SearchView> {
         }
         
         // 키보드 내리기
-        viewModel.output.resignKeyboard.bind { [weak self] _ in
+        viewModel.output.resignKeyboard.lazyBind { [weak self] _ in
             self?.mainView.searchBar.resignFirstResponder()
         }
         
@@ -86,7 +86,7 @@ final class SearchViewController: BaseViewController<SearchView> {
         }
         
         // 최근 검색어 영역에서 들어온 경우, 서치바에 텍스트 표시하기
-        viewModel.output.searchBarText.bind { [weak self] _ in
+        viewModel.output.searchBarText.lazyBind { [weak self] _ in
             self?.mainView.searchBar.text = self?.viewModel.input.recentKeywordTapped.value ?? "검색어 없음"
         }
     }

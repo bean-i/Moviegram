@@ -26,12 +26,12 @@ final class ProfileImageSettingViewController: BaseViewController<ProfileImageSe
     // MARK: - MVVM 추가
     override func bindData() {
         // 타이틀
-        viewModel.output.editModeText.bind { [weak self] text in
+        viewModel.output.editModeText.lazyBind { [weak self] text in
             self?.title = text
         }
         
         // 상단 선택된 이미지
-        viewModel.output.selectedImageNumber.bind { [weak self] int in
+        viewModel.output.selectedImageNumber.lazyBind { [weak self] int in
             self?.mainView.profileImageView.imageNumber = int
             self?.mainView.profileImageView.isSelected = true
         }

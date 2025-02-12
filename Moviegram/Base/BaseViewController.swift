@@ -13,18 +13,24 @@ class BaseViewController<T: UIView>: UIViewController {
         return view as! T
     }
     
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        bindData()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func loadView() {
         self.view = T(frame: UIScreen.main.bounds)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureHierarchy()
-        configureLayout()
         configureView()
         configureDelegate()
         configureGesture()
-        bindData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -32,10 +38,6 @@ class BaseViewController<T: UIView>: UIViewController {
         view.backgroundColor = .black
         navigationController?.navigationBar.topItem?.backButtonTitle = ""
     }
-    
-    func configureHierarchy() { }
-    
-    func configureLayout() { }
     
     func configureView() { }
     
