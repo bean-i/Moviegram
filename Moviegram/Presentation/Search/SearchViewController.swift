@@ -81,7 +81,7 @@ final class SearchViewController: BaseViewController<SearchView> {
                 return
             }
             let vc = MovieDetailViewController()
-            vc.movieInfo = viewModel.output.searchMovies.value[index]
+            vc.viewModel.input.movieInfo.value = viewModel.output.searchMovies.value[index]
             navigationController?.pushViewController(vc, animated: true)
         }
         

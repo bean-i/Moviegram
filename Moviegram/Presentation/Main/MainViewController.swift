@@ -107,7 +107,7 @@ final class MainViewController: BaseViewController<MainView> {
                 return
             }
             let vc = MovieDetailViewController()
-            vc.movieInfo = viewModel.output.todayMovies.value[index]
+            vc.viewModel.input.movieInfo.value = viewModel.output.todayMovies.value[index]
             navigationController?.pushViewController(vc, animated: true)
         }
     }
