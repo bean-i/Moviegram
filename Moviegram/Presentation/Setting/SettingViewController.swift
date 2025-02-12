@@ -24,6 +24,10 @@ final class SettingViewController: BaseViewController<SettingView> {
         mainView.profileView.configureData(data: UserInfo.shared)
     }
     
+    deinit {
+        print("SettingViewController Deinit")
+    }
+    
     // MARK: - Configure
     override func configureView() {
         navigationItem.title = "설정"

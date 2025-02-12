@@ -10,6 +10,10 @@ import UIKit
 // MARK: - 온보딩 ViewController
 final class OnboardingViewController: BaseViewController<OnboardingView> {
     
+    deinit {
+        print("OnboardingViewController Deinit")
+    }
+    
     override func configureGesture() {
         mainView.startButton.addTarget(
             self,

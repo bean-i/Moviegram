@@ -19,6 +19,10 @@ final class MovieDetailViewController: BaseViewController<MovieDetailView> {
         viewModel.input.viewWillAppearTrigger.value = ()
     }
     
+    deinit {
+        print("MovieDetailViewController Deinit")
+    }
+    
     override func bindData() {
         // 영화 데이터 전 화면에서 안 넘어온 경우 alert
         viewModel.output.showAlert.lazyBind { [weak self] _ in
