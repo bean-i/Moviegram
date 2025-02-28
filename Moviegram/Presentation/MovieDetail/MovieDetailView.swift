@@ -243,12 +243,15 @@ final class MovieDetailView: BaseView {
     }
     
     @objc private func seeMoreButtonTapped() {
-        if synopsisDetailLabel.numberOfLines == 0 {
-            convertSeeMoreButtonLabel(title: "More")
-            synopsisDetailLabel.numberOfLines = 3
-        } else {
-            convertSeeMoreButtonLabel(title: "Hide")
-            synopsisDetailLabel.numberOfLines = 0
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            if self?.synopsisDetailLabel.numberOfLines == 0 {
+                self?.convertSeeMoreButtonLabel(title: "More")
+                self?.synopsisDetailLabel.numberOfLines = 3
+            } else {
+                self?.convertSeeMoreButtonLabel(title: "Hide")
+                self?.synopsisDetailLabel.numberOfLines = 0
+            }
+            self?.layoutIfNeeded()
         }
     }
 
