@@ -10,7 +10,10 @@ import UIKit
 class BaseViewController<T: UIView>: UIViewController {
     
     var mainView: T {
-        return view as! T
+        guard let customView = view as? T else {
+            fatalError("view는 \(T.self) 타입이어야 합니다.")
+        }
+        return customView
     }
     
     init() {
@@ -23,7 +26,7 @@ class BaseViewController<T: UIView>: UIViewController {
     }
     
     override func loadView() {
-        self.view = T(frame: UIScreen.main.bounds)
+        self.view = T(frame: .zero)
     }
     
     override func viewDidLoad() {
