@@ -29,6 +29,10 @@ final class MBTICollectionView: BaseView {
         self.mbtiData = mbtiData
     }
     
+    @MainActor required override init(frame: CGRect) {
+        fatalError("init(frame:) has not been implemented")
+    }
+    
     override func configureHierarchy() {
         addSubview(collectionView)
     }
