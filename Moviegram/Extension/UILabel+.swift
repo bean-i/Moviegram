@@ -11,8 +11,6 @@ extension UILabel {
     
     func calculateNumberOfLines() -> Int {
         
-        self.layoutIfNeeded()
-        
         guard let text = self.text as? NSString,
               let font = self.font else {
             return 0
