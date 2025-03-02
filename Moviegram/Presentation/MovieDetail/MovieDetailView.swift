@@ -33,6 +33,17 @@ final class MovieDetailView: BaseView {
     private let posterLabel = UILabel()
     let posterCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
+    // MARK: - LayoutSubviews
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let line = synopsisDetailLabel.calculateNumberOfLines()
+        if line > 4 {
+            seeMoreButton.isHidden = false
+        } else {
+            seeMoreButton.isHidden = true
+        }
+    }
+    
     // MARK: - Configure UI
     override func configureHierarchy() {
         
@@ -194,16 +205,7 @@ final class MovieDetailView: BaseView {
         genreView.configureData(image: "film.fill", text: genre)
 
         synopsisDetailLabel.text = data.overview
-        
-        let line = synopsisDetailLabel.calculateNumberOfLines()
-        if line > 4 {
-            seeMoreButton.isHidden = false
-        } else {
-            seeMoreButton.isHidden = true
-        }
-        
     }
-    
     
     // MARK: - CollectionView Layout
     private func backdropCollectionViewLayout() -> UICollectionViewLayout {
